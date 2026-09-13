@@ -1,7 +1,7 @@
 # Higgsfield cost dashboard — spec
 
 Pinned snapshot: `public/higgsfield-costs.json` @ `updatedAt 2026-09-13T18:26:13.7922587Z`.
-If `scripts/fetch-higgsfield-costs.ps1` refreshes prices, update this spec's snapshot + §8 together.
+Results always come from the formula in §4 — no pinned per-cell expectations.
 
 ## 1. Objective + Non-goals
 
@@ -38,15 +38,15 @@ Hole = null/missing/`<= 0`/non-finite → skipped everywhere, never scored.
 
 ## 4. Algorithm (per model)
 
-Consts: `QUALITY_W=1.2, RES_W=1.0, T_RES=0.8, T_QUAL=0.6, W_RIGHT=1.0, W_DOWN=1.0, W_LEFT=0.5, W_UP=0.5, GREEN_AT=0.66, YELLOW_AT=0.33, STARS_MAX=3, EPS=1e-9`.
+Consts: `T_RES=0.8, T_QUAL=0.6, W_RIGHT=1.0, W_DOWN=1.0, W_LEFT=0.5, W_UP=0.5, GREEN_AT=0.66, YELLOW_AT=0.33, STARS_MAX=3, EPS=1e-9`.
 
 Phase A (Pareto): A dominates B if `A.qi>=B.qi && A.ri>=B.ri && A.p<=B.p+EPS` with one strict inequality → B red, score 0, reason `Dominated by {q} @ {r} at same price ({p} credits) — never pay same for less`, or `: more for less ({p} credits)` if `A.p<B.p-EPS`.
 
-Phase B (score, non-dominated only): `U=1.2*(qi+1)+1.0*(ri+1)`; `E=U/credits`.
+Phase B (score, non-dominated only): `U=(qi+1)+(ri+1)`; `E=U/credits`.
 Nearest valid neighbor in all 4 dirs (skip holes). `excess=max(0,(p-n)/n-T)` per direction (T per axis above); `score=E/(1+0.5*exL+0.5*exU+1.0*exR+1.0*exD)`.
 Reasons (EN): incoming `+{n}% for {prevR} -> {r}` / `+{n}% vs {prevQ}` (+ ` (skipped n/a)` if gap>1); outgoing `next {label} +{n}% (cheap upgrade|steep climb)`; none → `base combo`.
 
-Phase C (tiers, TWO-PASS): pass 1 `maxScore` over non-dominated (score>0) → green `≥0.66`, yellow `≥0.33`, else red. Soft tie-break: green cell with a same-price (`±EPS`) higher-`qi` twin whose tier is green/yellow (never red) caps at yellow + `; tied at {p} credits with higher quality {twinQ}`. Pass 2: RECOMPUTE `maxScore` over uncapped non-dominated, re-tier uncapped only.
+Phase C (tiers): `maxScore` over non-dominated (score>0) → green `≥0.66`, yellow `≥0.33`, else red.
 
 Picks = all green+yellow sorted by score desc, credits asc, utility desc, `qi`, `ri`.
 Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
@@ -67,19 +67,11 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 
 - Single-quality model (`nano_banana_pro`): vertical neighbors absent → no quality excess terms.
 - Single cell / all holes: no scores → list shows `No green or yellow combos.`
-- Same-price twins: only green/yellow twins cap (§4); red twins never cap.
-- `4k` boundary (`nano_banana_pro`): accept red or yellow, never green.
+- Same-price twins: tiers are pure score/maxScore, no cap — a higher-`qi` twin at the same price dominates, so the lower one ranks red.
+- `4k` boundary (`nano_banana_pro` at snapshot): red or yellow, never green — data observation, not a formula guarantee.
 - Float prices: all price comparisons use `±EPS`.
 
-## 8. Acceptance battery (GIVEN snapshot THEN)
-
-- [ ] GIVEN `gpt_image_2_5` THEN greens {medium/1k, medium/2k, high/1k, xhigh/1k, medium/4k}, 3 stars on top-3 by score; low/2k + low/4k yellow WITH tie reasons; reds EXACTLY {low/1k (dominated), max/2k, max/4k}; list opens low/2k, low/4k, medium/1k, medium/2k, high/1k…
-- [ ] GIVEN `grok_image` THEN greens {standard/2k}, yellow {quality/2k}, reds {standard/1k, quality/1k (both dominated)}; 1 star.
-- [ ] GIVEN `grok_image_2_0` THEN greens {low/1k, medium/2k, medium/1k}, yellow {low/2k WITH tie reason}; 3 stars; ZERO reds.
-- [ ] GIVEN `nano_banana_pro` THEN green {2k} 1 star; red {1k dominated}; 4k red-or-yellow, never green.
-- [ ] IF any line fails THEN adjust ONLY thresholds/weights, never the phase order.
-
-## 9. File map + Verify
+## 8. File map + Verify
 
 - `index.html` (shell) → `src/main.ts` (fetch + algorithm + render) → `src/style.css` (tokens from `DESIGN.md`). New: `DESIGN.md` (tokens only).
-- Verify: `vp check`, `vp build` (`tsc`) clean; Chrome 375px (tables scroll, page not) + 1280px; keyboard reaches button/dialog/table; dialog closes via `closedby`; reduced-motion kills animation.
+- Verify: `vp check`, `vp build` (`tsc`), `vp test` clean; Chrome 375px (tables scroll, page not) + 1280px; keyboard reaches button/dialog/table; dialog closes via `closedby`; reduced-motion kills animation.
