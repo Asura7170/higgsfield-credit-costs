@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Higgsfield cost dashboard</title>
+    <meta
+      name="description"
+      content="Compare Higgsfield image-model credit costs across qualities and resolutions."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Higgsfield cost dashboard</h1>
+      <p id="updated">Loading cost data…</p>
+      <button id="how-open" type="button" commandfor="how-dialog" command="show-modal">
+        How to update
+      </button>
+    </header>
+    <main id="app"></main>
+    <section aria-labelledby="legend-h">
+      <h2 id="legend-h">Legend</h2>
+      <ul>
+        <li><span class="sw tier-green" aria-hidden="true"></span>Best value</li>
+        <li><span class="sw tier-yellow" aria-hidden="true"></span>Fair value</li>
+        <li><span class="sw tier-red" aria-hidden="true"></span>Poor value</li>
+      </ul>
+      <p>★ top pick (up to 3 per table)</p>
+    </section>
+    <p id="method">
+      Each combo scores quality plus resolution per credit, penalized when a neighbor costs
+      disproportionately more; combos dominated on quality, resolution, and price rank red.
+    </p>
+    <dialog id="how-dialog" closedby="any" aria-labelledby="how-h">
+      <h2 id="how-h">How to update</h2>
+      <p>Refresh the data file with the higgsfield CLI, then reload:</p>
+      <pre><code>powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
+      <button type="button" commandfor="how-dialog" command="close">Close</button>
+    </dialog>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,157 @@
+:root {
+  color-scheme: dark;
+  interpolate-size: allow-keywords;
+  --bg: linear-gradient(#0f1113, #030304);
+  --surface: #1a1a1a;
+  --text: #ffffff;
+  --muted: #929292;
+  --border: rgba(255, 255, 255, 0.08);
+  --radius: 12px;
+  --lime: #d1fe17;
+  --on-lime: #1a1a1a;
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+header,
+main,
+section,
+#method {
+  max-width: 64rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.625rem 1.25rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--lime);
+  color: var(--on-lime);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 1.5rem rgba(209, 254, 23, 0.25);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  text-align: start;
+  white-space: nowrap;
+}
+
+td.tier-green {
+  background: color-mix(in oklch, var(--green) 22%, transparent);
+}
+
+td.tier-yellow {
+  background: color-mix(in oklch, var(--yellow) 22%, transparent);
+}
+
+td.tier-red {
+  background: color-mix(in oklch, var(--red) 22%, transparent);
+}
+
+td.tier-red::before {
+  content: "! ";
+  color: var(--red);
+}
+
+td.top::after {
+  content: " ★";
+  color: var(--lime);
+}
+
+#method,
+#updated {
+  color: var(--muted);
+}
+
+.sw {
+  display: inline-block;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: 4px;
+  margin-inline-end: 0.5rem;
+  vertical-align: baseline;
+}
+
+.sw.tier-green {
+  background: var(--green);
+}
+
+.sw.tier-yellow {
+  background: var(--yellow);
+}
+
+.sw.tier-red {
+  background: var(--red);
+}
+
+dialog {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+pre {
+  overflow-x: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none;
+    transition: none;
+  }
+}
