@@ -1,0 +1,76 @@
+{
+  "updatedAt": "2026-09-13T18:26:13.7922587Z",
+  "aspect_ratio": "1:1",
+  "models": {
+    "gpt_image_2_5": {
+      "resolutions": ["1k", "2k", "4k"],
+      "qualities": ["low", "medium", "high", "xhigh", "max"],
+      "matrix": {
+        "low": {
+          "1k": 1,
+          "2k": 1,
+          "4k": 1.5
+        },
+        "medium": {
+          "1k": 1,
+          "2k": 1.5,
+          "4k": 2
+        },
+        "high": {
+          "1k": 2,
+          "2k": 3,
+          "4k": 4.5
+        },
+        "xhigh": {
+          "1k": 3,
+          "2k": 5,
+          "4k": 8
+        },
+        "max": {
+          "1k": 5,
+          "2k": 10,
+          "4k": 16
+        }
+      }
+    },
+    "grok_image": {
+      "resolutions": ["1k", "2k"],
+      "qualities": ["standard", "quality"],
+      "matrix": {
+        "standard": {
+          "1k": 1,
+          "2k": 1
+        },
+        "quality": {
+          "1k": 2,
+          "2k": 2
+        }
+      }
+    },
+    "grok_image_2_0": {
+      "resolutions": ["1k", "2k"],
+      "qualities": ["low", "medium"],
+      "matrix": {
+        "low": {
+          "1k": 1.25,
+          "2k": 2
+        },
+        "medium": {
+          "1k": 2,
+          "2k": 2.5
+        }
+      }
+    },
+    "nano_banana_pro": {
+      "resolutions": ["1k", "2k", "4k"],
+      "qualities": ["default"],
+      "matrix": {
+        "default": {
+          "1k": 2,
+          "2k": 2,
+          "4k": 4
+        }
+      }
+    }
+  }
+}
