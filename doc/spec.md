@@ -17,7 +17,7 @@ no filters/sorting controls, no i18n (English only). Light + dark themes follow 
 - TS: `erasableSyntaxOnly` + `verbatimModuleSyntax` — string-literal unions + `as const`, no enum/namespaces/parameter properties. `noUnusedLocals`/`noUnusedParameters` on.
 - `vite.config.ts` MUST contain `server: { open: true }` (additive change, only allowed touch).
 - DO NOT TOUCH otherwise: `scripts/`, `public/higgsfield-costs.json`, `package.json`, `tsconfig.json`.
-- Fonts: Google Fonts Inter + Space Grotesk with `display=swap`, `system-ui` fallback.
+- Fonts: Google Fonts Plus Jakarta Sans + Space Grotesk with `display=swap`, `system-ui` fallback.
 - `script type="module"` in `index.html`.
 
 ## 3. Data contract
@@ -53,7 +53,7 @@ Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
 
 ## 5. DOM contract
 
-- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: `h2` `<id> — N combos`, `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations", `ol` of picks); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
+- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (sun/moon icon, flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: `h2` `<id> — N combos`, `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations", `ol` of picks); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
 - Fetch failure / malformed JSON → `p#updated` shows error, `main#app` shows one `p` error message, no tables.
 
 ## 6. Style contract

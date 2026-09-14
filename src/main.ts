@@ -182,6 +182,7 @@ export function scoreModel(id: string, model: CostModel): ModelResult {
 
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
+  section.className = "reveal";
   const h2 = document.createElement("h2");
   h2.textContent = `${m.id} — ${m.cells.length} combos`;
   section.append(h2);
@@ -247,6 +248,19 @@ function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
   app.replaceChildren(...results.map(renderModel));
+  initReveals();
+}
+
+function initReveals(): void {
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+      }
+    }
+  });
+  for (const el of document.querySelectorAll(".reveal:not(.in)")) io.observe(el);
 }
 
 function fail(message: string): void {
@@ -267,11 +281,12 @@ function systemTheme(): string {
 
 function paintThemeButton(): void {
   const btn = document.querySelector("#theme-toggle");
-  if (btn)
-    btn.textContent =
-      (document.documentElement.dataset.theme ?? systemTheme()) === "dark"
-        ? "Light mode"
-        : "Dark mode";
+  if (btn) {
+    btn.setAttribute(
+      "aria-pressed",
+      String((document.documentElement.dataset.theme ?? systemTheme()) === "dark"),
+    );
+  }
 }
 
 function initTheme(): void {
@@ -312,5 +327,6 @@ async function boot(): Promise<void> {
 
 if (typeof document !== "undefined") {
   initTheme();
+  initReveals();
   void boot();
 }

@@ -29,7 +29,9 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
   /* Shape, type, motion */
   --radius: 12px;
   --cta-shadow: light-dark(0 1px 2px rgba(0, 0, 0, 0.12), 0 0 1.5rem rgba(209, 254, 23, 0.25));
-  --font-body: "Inter", system-ui, sans-serif;
+  --edge-highlight: light-dark(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.06));
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-display: "Space Grotesk", system-ui, sans-serif;
 }
 ```
@@ -37,10 +39,10 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
 ## Rules
 
 - **Color lock:** lime is the only decorative accent. Tier colors are data status only, never decoration.
-- **Shape lock:** `--radius` everywhere; no pills, no mixed radii.
+- **Shape lock:** `--radius` for surfaces, pills for buttons.
 - **Data figures:** `font-variant-numeric: tabular-nums` on all tables and prices.
 - **Prose measure:** max `65ch` for paragraphs.
 - **Focus:** 2px `var(--focus)` outline with 2px offset, always visible.
-- **Motion:** `transform`/`opacity` only; `prefers-reduced-motion` kills everything.
+- **Motion:** `var(--ease-out)` everywhere, `transform`/`opacity` only; sections `.reveal` fade up via `IntersectionObserver`; `prefers-reduced-motion` kills everything.
 - **Contrast:** AA everywhere, both themes — CTA is lime on near-black, tiers are 22% tints behind `--text`.
-- **Theme:** header `#theme-toggle` flips `html[data-theme]` (persisted in `localStorage`); unset = OS decides via `color-scheme`. No per-section inversion.
+- **Theme:** header `#theme-toggle` is a circular 44px surface button with a lime sun/moon icon (shows the target mode); it flips `html[data-theme]` (persisted in `localStorage`); unset = OS decides via `color-scheme`. No per-section inversion.
