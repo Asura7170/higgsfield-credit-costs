@@ -350,6 +350,11 @@ td {
   white-space: nowrap;
 }
 
+/* ponytail: row-header column collapses to its longest label; data cells take the rest. */
+tbody th {
+  width: 1px;
+}
+
 td {
   text-align: center;
   position: relative;
