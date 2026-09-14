@@ -75,6 +75,7 @@ Tables use `separate` + `spacing: 0` 1px grid (first body row drops its top bord
 - `4k` boundary (`nano_banana_pro` at snapshot): red or yellow, never green — data observation, not a formula guarantee.
 - Float prices: all price comparisons use `±EPS`.
 - Jump labels use the nearest valid neighbor (holes skipped silently in the visual; `title` notes `(skipped n/a)`); `= 0%` renders deliberately; a price inversion would render `-X%` (snapshot data is monotonic).
+- Known bounded inconsistency: a nonzero jump below 0.5% would round to `= 0%` in the label while its reason shows `+0%` (snapshot min nonzero jump is 25%, so no current impact).
 
 ## 8. File map + Verify
 
