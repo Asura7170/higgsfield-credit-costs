@@ -278,7 +278,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
 
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
-  section.className = "reveal";
+  section.className = "reveal model";
   const h2 = document.createElement("h2");
   h2.textContent = displayName(m.id);
   section.append(h2);
