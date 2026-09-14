@@ -1,6 +1,7 @@
 import "./style.css";
 
 const EPS = 1e-9;
+const QUALITY_W = 1.2;
 const T_RES = 0.8;
 const T_QUAL = 0.6;
 const W_RIGHT = 1.0;
@@ -104,7 +105,7 @@ export function scoreModel(id: string, model: CostModel): ModelResult {
         qi,
         ri,
         price: price as number,
-        utility: qi + ri + 2,
+        utility: QUALITY_W * (qi + 1) + (ri + 1),
         score: 0,
         tier: "red",
         reason: "",

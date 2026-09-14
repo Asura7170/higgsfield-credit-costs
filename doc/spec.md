@@ -38,11 +38,11 @@ Hole = null/missing/`<= 0`/non-finite → skipped everywhere, never scored.
 
 ## 4. Algorithm (per model)
 
-Consts: `T_RES=0.8, T_QUAL=0.6, W_RIGHT=1.0, W_DOWN=1.0, W_LEFT=0.5, W_UP=0.5, GREEN_AT=0.66, YELLOW_AT=0.33, STARS_MAX=3, EPS=1e-9`.
+Consts: `QUALITY_W=1.2, T_RES=0.8, T_QUAL=0.6, W_RIGHT=1.0, W_DOWN=1.0, W_LEFT=0.5, W_UP=0.5, GREEN_AT=0.66, YELLOW_AT=0.33, STARS_MAX=3, EPS=1e-9`.
 
 Phase A (Pareto): A dominates B if `A.qi>=B.qi && A.ri>=B.ri && A.p<=B.p+EPS` with one strict inequality → B red, score 0, reason `Dominated by {q} @ {r} at same price ({p} credits) — never pay same for less`, or `: more for less ({p} credits)` if `A.p<B.p-EPS`.
 
-Phase B (score, non-dominated only): `U=(qi+1)+(ri+1)`; `E=U/credits`.
+Phase B (score, non-dominated only): `U=1.2*(qi+1)+1.0*(ri+1)` (quality weighs slightly more); `E=U/credits`.
 Nearest valid neighbor in all 4 dirs (skip holes). `excess=max(0,(p-n)/n-T)` per direction (T per axis above); `score=E/(1+0.5*exL+0.5*exU+1.0*exR+1.0*exD)`.
 Reasons (EN): incoming `+{n}% for {prevR} -> {r}` / `+{n}% vs {prevQ}` (+ ` (skipped n/a)` if gap>1); outgoing `next {label} +{n}% (cheap upgrade|steep climb)`; none → `base combo`.
 

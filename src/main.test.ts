@@ -21,7 +21,7 @@ describe("dominance", () => {
       "Dominated by b @ 1x at same price (1 credits) — never pay same for less",
     );
     expect(b.tier).toBe("green");
-    expect(b.score).toBeCloseTo(3, 9);
+    expect(b.score).toBeCloseTo(3.4, 9);
     expect(b.reason).toBe("base combo");
     expect(b.top).toBe(true);
     expect(m.picks.map((c) => c.q)).toEqual(["b"]);
@@ -29,11 +29,11 @@ describe("dominance", () => {
 });
 
 describe("scoring", () => {
-  // low: 1k=1 2k=2 / high: 1k=2 2k=4 — nothing dominated.
-  // low/1k: U=2 E=2 pen=0 → 2
-  // low/2k: U=3 E=1.5 pen=0.5*((2-1)/1-0.8)=0.1 → 1.5/1.1
-  // high/1k: U=3 E=1.5 pen=0.5*((2-1)/1-0.6)=0.2 → 1.5/1.2
-  // high/2k: U=4 E=1 pen=0.5*0.2+0.5*0.4=0.3 → 1/1.3
+  // low: 1k=1 2k=2 / high: 1k=2 2k=4 — nothing dominated. QUALITY_W=1.2.
+  // low/1k: U=2.2 E=2.2 pen=0 → 2.2
+  // low/2k: U=3.2 E=1.6 pen=0.5*((2-1)/1-0.8)=0.1 → 1.6/1.1
+  // high/1k: U=3.4 E=1.7 pen=0.5*((2-1)/1-0.6)=0.2 → 1.7/1.2
+  // high/2k: U=4.4 E=1.1 pen=0.5*0.2+0.5*0.4=0.3 → 1.1/1.3
   const m = scoreModel("m", {
     resolutions: ["1k", "2k"],
     qualities: ["low", "high"],
@@ -42,10 +42,10 @@ describe("scoring", () => {
   const by = (q: string, r: string) => m.cells.find((c) => c.q === q && c.r === r)!;
 
   it("computes neighbor-weighted scores", () => {
-    expect(by("low", "1k").score).toBeCloseTo(2, 9);
-    expect(by("low", "2k").score).toBeCloseTo(1.5 / 1.1, 9);
-    expect(by("high", "1k").score).toBeCloseTo(1.5 / 1.2, 9);
-    expect(by("high", "2k").score).toBeCloseTo(1 / 1.3, 9);
+    expect(by("low", "1k").score).toBeCloseTo(2.2, 9);
+    expect(by("low", "2k").score).toBeCloseTo(1.6 / 1.1, 9);
+    expect(by("high", "1k").score).toBeCloseTo(1.7 / 1.2, 9);
+    expect(by("high", "2k").score).toBeCloseTo(1.1 / 1.3, 9);
   });
 
   it("tiers by score/maxScore", () => {
