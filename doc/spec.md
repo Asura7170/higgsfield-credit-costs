@@ -55,6 +55,7 @@ Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
 
 - `index.html`: semantic, one `h1` "Higgsfield cost dashboard" (skip-link to `#app` first in `body`); `head` with favicon, OG tags, per-theme `theme-color`; `header` with two flex rows: `.hero-top` (`h1` + `button#theme-toggle` sun/moon icon, flips `html[data-theme]`, persisted) and `.hero-sub` (`button#how-open` "How to update" with `commandfor="how-popover" command="toggle-popover"` + `p > time#updated`); `main#app` (TS-rendered sections per model: uppercase `h2` with the model display name (`gpt_image_2_5` → "GPT Image 2.5", unknown ids fall back to the id with `_` as spaces), `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations" + ranked `ol.picks` of top picks (rank, combo, tabular price, ★, one-line plain verdict, raw reason in `title`) + `<details name="more-picks">` with the remaining picks (one shared name document-wide, so opening one closes the others); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `div#how-popover popover="auto" closedby="any"` showing the refresh command in a `.cmd-bar` (`role="group"`) with `#copy-cmd` — Clipboard API copy with select-for-manual-copy fallback, feedback in `aria-live` `<output>.copy-note`.
 - Fetch failure / malformed JSON → `p#updated` shows error, `main#app` shows one `p` error message, no tables.
+- Jump labels: each data cell appends `span.jump-r` (`+X% →` vs nearest-valid left neighbor) / `span.jump-d` (`+Y% ↓` vs nearest-valid upper), both `aria-hidden`; rendered for any existing neighbor including `= 0%`, none when base; `td` carries `aria-label` "`<price>` credits, `<best|fair|poor>` value[, top pick][, jumps|, base]" and `title` = reason (incoming steps only when `price > neighbor + EPS`, so `= 0%` has no incoming reason).
 
 ## 6. Style contract
 
@@ -64,6 +65,7 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 44px buttons, `:focus-visible` lime, `prefers-reduced-motion` kills animation.
 `.reveal` sections fade up via scroll-driven `animation-timeline: view()` (no JS, no noscript); pick stagger uses `sibling-index()`;
 `.more-picks::details-content` animates open/close via `calc-size()`; `#copy-cmd` sticks right inside `.cmd-bar` while the command scrolls.
+Tables use `separate` + `spacing: 0` 1px grid (first body row drops its top border so the thead junction stays 1px); `td` and `thead th` centered; jump labels are frosted pills (translucent surface + `blur(3px)`, radius `99px`), hover/active `scale: 1.25`.
 
 ## 7. Edge cases
 
@@ -72,6 +74,8 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 - Same-price twins: tiers are pure score/maxScore, no cap — a higher-`qi` twin at the same price dominates, so the lower one ranks red.
 - `4k` boundary (`nano_banana_pro` at snapshot): red or yellow, never green — data observation, not a formula guarantee.
 - Float prices: all price comparisons use `±EPS`.
+- Jump labels use the nearest valid neighbor (holes skipped silently in the visual; `title` notes `(skipped n/a)`); `= 0%` renders deliberately; a price inversion would render `-X%` (snapshot data is monotonic).
+- Known bounded inconsistency: a nonzero jump below 0.5% would round to `= 0%` in the label while its reason shows `+0%` (snapshot min nonzero jump is 25%, so no current impact).
 
 ## 8. File map + Verify
 

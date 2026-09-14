@@ -264,7 +264,8 @@ summary:focus-visible,
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   font-variant-numeric: tabular-nums;
 }
@@ -272,9 +273,82 @@ table {
 th,
 td {
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
+  border: 0 solid var(--border);
+  border-width: 1px 1px 0 0;
   text-align: start;
   white-space: nowrap;
+}
+
+td {
+  text-align: center;
+  position: relative;
+}
+
+thead th {
+  text-align: center;
+}
+
+tr > :first-child {
+  border-left-width: 1px;
+}
+
+thead tr > *,
+tbody tr:last-child > * {
+  border-bottom-width: 1px;
+}
+
+/* ponytail: thead bottom + first-row top would stack to 2px in separate mode. */
+tbody tr:first-child > * {
+  border-top-width: 0;
+}
+
+/* ponytail: jump labels ride the cell (not the text) so column stretch can't offset them. */
+.jump-r,
+.jump-d {
+  position: absolute;
+  z-index: 1;
+  backdrop-filter: blur(3px);
+  border-radius: 99px;
+  padding-inline: 0.25em;
+  font-size: 0.65rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  user-select: none;
+  opacity: 0.75;
+  transition:
+    scale 0.15s var(--ease-out),
+    opacity 0.15s var(--ease-out);
+}
+
+.jump-r::before,
+.jump-d::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+}
+
+.jump-r:hover,
+.jump-r:active,
+.jump-d:hover,
+.jump-d:active {
+  z-index: 3;
+  scale: 1.25;
+  opacity: 1;
+  cursor: default;
+}
+
+.jump-r {
+  left: 0;
+  top: 50%;
+  translate: -50% -50%;
+  z-index: 2;
+}
+
+.jump-d {
+  top: 0;
+  left: 50%;
+  translate: -50% -60%;
 }
 
 @function --tint(--c) {
