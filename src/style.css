@@ -529,8 +529,9 @@ ol.picks {
   background: var(--surface);
   box-shadow: inset 0 1px 0 var(--edge-highlight);
   padding: 0.75rem 1rem;
-  display: grid;
-  gap: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   animation: pick-in 0.5s var(--ease-out) both;
   animation-delay: calc(sibling-index() * 70ms);
 }
@@ -557,6 +558,13 @@ ol.picks {
   border-inline-end-color: var(--tier-low);
 }
 
+.pick-main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
 .pick-line {
   display: flex;
   align-items: baseline;
@@ -570,7 +578,6 @@ ol.picks {
 }
 
 .pick-price {
-  margin-inline-start: auto;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;

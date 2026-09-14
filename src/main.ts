@@ -23,6 +23,10 @@ export function displayName(id: string): string {
   return MODEL_NAMES[id] ?? id.replaceAll("_", " ");
 }
 
+function cap(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 type Tier = "green" | "yellow" | "red";
 
 interface CostFile {
@@ -221,7 +225,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   rankEl.className = "pick-rank";
   rankEl.textContent = `${rank}`;
   const combo = document.createElement("strong");
-  combo.textContent = `${c.q} @ ${c.r}`;
+  combo.textContent = `${cap(c.q)} - ${c.r}`;
   line.append(rankEl, combo);
   if (c.top) {
     const star = document.createElement("span");
@@ -234,11 +238,13 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   const price = document.createElement("span");
   price.className = "pick-price";
   price.textContent = `${c.price} credits`;
-  line.append(price);
   const say = document.createElement("p");
   say.className = "pick-verdict";
   say.textContent = verdict(c.reason);
-  li.append(line, say);
+  const main = document.createElement("div");
+  main.className = "pick-main";
+  main.append(line, say);
+  li.append(main, price);
   return li;
 }
 
@@ -268,7 +274,7 @@ function renderModel(m: ModelResult): HTMLElement {
     const tr = document.createElement("tr");
     const th = document.createElement("th");
     th.scope = "row";
-    th.textContent = q;
+    th.textContent = cap(q);
     tr.append(th);
     for (const r of m.resolutions) {
       const td = document.createElement("td");
