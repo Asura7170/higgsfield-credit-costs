@@ -191,6 +191,50 @@ export function scoreModel(id: string, model: CostModel): ModelResult {
   return { id, qualities: model.qualities, resolutions: model.resolutions, cells, picks };
 }
 
+export function verdict(reason: string): string {
+  if (reason === "base combo") return "The baseline — no pricier neighbor.";
+  const step = reason.match(/\+(\d+)% for (\S+) -> ([^;]+)/);
+  if (step) return `Pays +${step[1]}% stepping ${step[2]} → ${step[3].trim()}.`;
+  const versus = reason.match(/\+(\d+)% vs ([^;(]+)/);
+  if (versus) return `Pays +${versus[1]}% over ${versus[2].trim()} quality.`;
+  const next = reason.match(/next (\S+) \+(\d+)% \((cheap upgrade|steep climb)\)/);
+  if (next) {
+    return `Next step ${next[1]} costs +${next[2]}% — ${next[3] === "cheap upgrade" ? "worth it" : "pricey"}.`;
+  }
+  return reason;
+}
+
+function pickItem(c: Cell, rank: number): HTMLElement {
+  const li = document.createElement("li");
+  li.className = `pick tier-${c.tier}${c.top ? " top" : ""}`;
+  li.title = c.reason;
+  const line = document.createElement("p");
+  line.className = "pick-line";
+  const rankEl = document.createElement("span");
+  rankEl.className = "pick-rank";
+  rankEl.textContent = `${rank}`;
+  const combo = document.createElement("strong");
+  combo.textContent = `${c.q} @ ${c.r}`;
+  line.append(rankEl, combo);
+  if (c.top) {
+    const star = document.createElement("span");
+    star.className = "star";
+    star.setAttribute("role", "img");
+    star.setAttribute("aria-label", "top pick");
+    star.textContent = "★";
+    line.append(star);
+  }
+  const price = document.createElement("span");
+  price.className = "pick-price";
+  price.textContent = `${c.price} credits`;
+  line.append(price);
+  const say = document.createElement("p");
+  say.className = "pick-verdict";
+  say.textContent = verdict(c.reason);
+  li.append(line, say);
+  return li;
+}
+
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
   section.className = "reveal";
@@ -240,18 +284,32 @@ function renderModel(m: ModelResult): HTMLElement {
   const h3 = document.createElement("h3");
   h3.textContent = "Best combinations";
   section.append(h3);
-  const ol = document.createElement("ol");
   if (m.picks.length === 0) {
-    const li = document.createElement("li");
-    li.textContent = "No green or yellow combos.";
-    ol.append(li);
+    const p = document.createElement("p");
+    p.textContent = "No green or yellow combos.";
+    section.append(p);
+    return section;
   }
-  for (const c of m.picks) {
-    const li = document.createElement("li");
-    li.textContent = `${c.q} @ ${c.r} — ${c.price} credits — ${c.reason}`;
-    ol.append(li);
-  }
+  const tops = m.picks.filter((c) => c.top);
+  const rest = m.picks.filter((c) => !c.top);
+  const shown = tops.length > 0 ? tops : m.picks.slice(0, 1);
+  const hidden = tops.length > 0 ? rest : m.picks.slice(1);
+  const ol = document.createElement("ol");
+  ol.className = "picks";
+  shown.forEach((c, i) => ol.append(pickItem(c, i + 1)));
   section.append(ol);
+  if (hidden.length > 0) {
+    const det = document.createElement("details");
+    det.className = "more-picks";
+    const sum = document.createElement("summary");
+    sum.textContent = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
+    const restOl = document.createElement("ol");
+    restOl.className = "picks";
+    restOl.start = shown.length + 1;
+    hidden.forEach((c, i) => restOl.append(pickItem(c, shown.length + i + 1)));
+    det.append(sum, restOl);
+    section.append(det);
+  }
   return section;
 }
 

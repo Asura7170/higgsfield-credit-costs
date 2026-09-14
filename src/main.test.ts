@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { scoreModel, type Cell } from "./main.ts";
+import { scoreModel, verdict, type Cell } from "./main.ts";
 
 const rankKey = (c: Cell): number[] => [-c.score, c.price, -c.utility, c.qi, c.ri];
 const ordered = (a: number[], b: number[]): boolean => {
@@ -67,6 +67,18 @@ describe("scoring", () => {
   it("ranks picks and stars green only, max 3", () => {
     expect(m.picks.map((c) => `${c.q}/${c.r}`)).toEqual(["low/1k", "low/2k", "high/1k", "high/2k"]);
     expect(m.picks.filter((c) => c.top).map((c) => `${c.q}/${c.r}`)).toEqual(["low/1k", "low/2k"]);
+  });
+});
+
+describe("verdict", () => {
+  it("turns reasons into plain sentences", () => {
+    expect(verdict("base combo")).toBe("The baseline — no pricier neighbor.");
+    expect(verdict("+100% for 1k -> 2k; next high +100% (steep climb)")).toBe(
+      "Pays +100% stepping 1k → 2k.",
+    );
+    expect(verdict("+100% vs low")).toBe("Pays +100% over low quality.");
+    expect(verdict("next 2k +25% (cheap upgrade)")).toBe("Next step 2k costs +25% — worth it.");
+    expect(verdict("next high +100% (steep climb)")).toBe("Next step high costs +100% — pricey.");
   });
 });
 

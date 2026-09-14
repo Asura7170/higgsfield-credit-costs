@@ -258,6 +258,111 @@ dialog {
   box-shadow: inset 0 1px 0 var(--edge-highlight);
 }
 
+ol.picks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pick {
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 var(--edge-highlight);
+  padding: 0.75rem 1rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.pick.tier-green {
+  border-inline-start-color: var(--tier-high);
+}
+
+.pick.tier-yellow {
+  border-inline-start-color: var(--tier-mid);
+}
+
+.pick.tier-red {
+  border-inline-start-color: var(--tier-low);
+}
+
+.pick-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.pick-rank {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.pick-price {
+  margin-inline-start: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pick .star {
+  color: var(--brand);
+}
+
+.pick-verdict {
+  margin: 0;
+  color: var(--muted);
+}
+
+.more-picks summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin: 16px 0;
+  width: fit-content;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.more-picks summary::-webkit-details-marker {
+  display: none;
+}
+
+.more-picks summary::marker {
+  content: "";
+}
+
+.more-picks summary:hover {
+  border-color: var(--brand);
+}
+
+.more-picks summary:active {
+  transform: scale(0.97);
+}
+
+.more-picks summary::after {
+  content: "";
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  border-inline-end: 2px solid light-dark(var(--brand-deep), var(--brand));
+  border-block-end: 2px solid light-dark(var(--brand-deep), var(--brand));
+  transform: rotate(-45deg);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.more-picks[open] summary::after {
+  transform: rotate(45deg);
+}
+
 pre {
   overflow-x: auto;
 }

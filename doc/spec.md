@@ -53,7 +53,7 @@ Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
 
 ## 5. DOM contract
 
-- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (sun/moon icon, flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: uppercase `h2` with the model display name (`gpt_image_2_5` → "GPT Image 2.5", unknown ids fall back to the id with `_` as spaces), `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations", `ol` of picks); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
+- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (sun/moon icon, flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: uppercase `h2` with the model display name (`gpt_image_2_5` → "GPT Image 2.5", unknown ids fall back to the id with `_` as spaces), `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations" + ranked `ol.picks` of top picks (rank, combo, tabular price, ★, one-line plain verdict, raw reason in `title`) + `<details>` with the remaining picks; `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
 - Fetch failure / malformed JSON → `p#updated` shows error, `main#app` shows one `p` error message, no tables.
 
 ## 6. Style contract
