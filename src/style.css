@@ -280,6 +280,10 @@ td {
   position: relative;
 }
 
+td {
+  text-align: center;
+}
+
 tr > :first-child {
   border-left-width: 1px;
 }
