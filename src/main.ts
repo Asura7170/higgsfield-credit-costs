@@ -278,7 +278,8 @@ function pickItem(c: Cell, rank: number): HTMLElement {
 
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
-  section.className = "reveal";
+  // ponytail: widest matrix spans 2 bento cols; threshold 8 fits only GPT (15).
+  section.className = `reveal model${m.cells.length > 8 ? " model-wide" : ""}`;
   const h2 = document.createElement("h2");
   h2.textContent = displayName(m.id);
   section.append(h2);
@@ -383,10 +384,24 @@ function renderModel(m: ModelResult): HTMLElement {
   return section;
 }
 
+// ponytail: append() moves live nodes — static legend+method become the 5th tile.
+function legendTile(): HTMLElement | null {
+  const legend = document.querySelector("section[aria-labelledby='legend-h']");
+  const method = document.querySelector("#method");
+  if (!legend || !method) return null;
+  const tile = document.createElement("section");
+  tile.className = "reveal model legend-tile";
+  tile.append(...legend.childNodes, method);
+  legend.remove();
+  return tile;
+}
+
 function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
+  const tile = legendTile();
   app.replaceChildren(...results.map(renderModel));
+  if (tile) app.append(tile);
 }
 
 function initCopyButton(): void {
