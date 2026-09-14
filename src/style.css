@@ -524,6 +524,7 @@ ol.picks {
 .pick {
   border: 1px solid var(--border);
   border-inline-start: 4px solid var(--border);
+  border-inline-end: 4px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: inset 0 1px 0 var(--edge-highlight);
@@ -543,14 +544,17 @@ ol.picks {
 
 .pick.tier-green {
   border-inline-start-color: var(--tier-high);
+  border-inline-end-color: var(--tier-high);
 }
 
 .pick.tier-yellow {
   border-inline-start-color: var(--tier-mid);
+  border-inline-end-color: var(--tier-mid);
 }
 
 .pick.tier-red {
   border-inline-start-color: var(--tier-low);
+  border-inline-end-color: var(--tier-low);
 }
 
 .pick-line {
