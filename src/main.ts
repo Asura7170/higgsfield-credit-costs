@@ -312,16 +312,26 @@ function renderModel(m: ModelResult): HTMLElement {
       const cell = m.cells.find((c) => c.q === q && c.r === r);
       if (cell) {
         const { left, up } = deltasFor(m, cell);
-        const price = document.createElement("span");
-        price.className = "c";
-        price.textContent = `${cell.price}`;
-        if (left) price.dataset.r = `${fmtJump(jumpPct(left.price, cell.price))} →`;
-        if (up) price.dataset.d = `${fmtJump(jumpPct(up.price, cell.price))} ↓`;
-        td.append(price);
+        td.textContent = `${cell.price}`;
+        const jumps: string[] = [];
+        for (const [label, cls] of [
+          [left && `${fmtJump(jumpPct(left.price, cell.price))} →`, "jump-r"],
+          [up && `${fmtJump(jumpPct(up.price, cell.price))} ↓`, "jump-d"],
+        ] as const) {
+          if (!label) continue;
+          jumps.push(label);
+          const edge = document.createElement("span");
+          edge.className = cls;
+          edge.setAttribute("aria-hidden", "true");
+          edge.textContent = label;
+          td.append(edge);
+        }
         td.className = `tier-${cell.tier}${cell.top ? " top" : ""}`;
         td.title = cell.reason;
-        const jumps = [price.dataset.r, price.dataset.d].filter(Boolean).join(", ");
-        td.setAttribute("aria-label", `${cell.price} credits${jumps ? `, ${jumps}` : ", base"}`);
+        td.setAttribute(
+          "aria-label",
+          `${cell.price} credits${jumps.length > 0 ? `, ${jumps.join(", ")}` : ", base"}`,
+        );
       } else {
         td.textContent = "n/a";
       }

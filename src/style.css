@@ -277,6 +277,7 @@ td {
   border-width: 1px 1px 0 0;
   text-align: start;
   white-space: nowrap;
+  position: relative;
 }
 
 tr > :first-child {
@@ -288,13 +289,9 @@ tbody tr:last-child > * {
   border-bottom-width: 1px;
 }
 
-/* ponytail: jump labels live ON the grid lines via data attrs; zerolayout cost, not selectable. */
-td .c {
-  position: relative;
-}
-
-td .c[data-r]::after,
-td .c[data-d]::before {
+/* ponytail: jump labels ride the cell (not the text) so column stretch can't offset them. */
+.jump-r,
+.jump-d {
   position: absolute;
   z-index: 1;
   background: var(--surface);
@@ -303,21 +300,29 @@ td .c[data-d]::before {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  user-select: none;
 }
 
-td .c[data-r]::after {
-  content: attr(data-r) / "";
-  right: -1rem;
+.jump-r {
+  right: 0;
   top: 50%;
   translate: 50% -50%;
   z-index: 2;
 }
 
-td .c[data-d]::before {
-  content: attr(data-d) / "";
-  bottom: -0.75rem;
-  left: 0;
-  translate: 0 50%;
+.jump-d {
+  bottom: 0;
+  left: 50%;
+  translate: -50% 50%;
+}
+
+/* ponytail: outer frame has no neighbor to straddle into — tuck those labels inside. */
+td:last-child .jump-r {
+  translate: 0 -50%;
+}
+
+tbody tr:last-child .jump-d {
+  translate: -50% 0;
 }
 
 @function --tint(--c) {
