@@ -302,9 +302,8 @@ tbody tr:last-child > * {
 .jump-d {
   position: absolute;
   z-index: 1;
-  background: color-mix(in oklch, var(--surface) 62%, transparent);
-  backdrop-filter: blur(4px);
-  border-radius: 6px;
+  backdrop-filter: blur(3px);
+  border-radius: 99px;
   padding-inline: 0.25em;
   font-size: 0.65rem;
   color: var(--muted);
