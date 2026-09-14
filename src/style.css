@@ -302,6 +302,9 @@ tbody tr:last-child > * {
 .jump-d {
   position: absolute;
   z-index: 1;
+  background: color-mix(in oklch, var(--surface) 62%, transparent);
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
   padding-inline: 0.25em;
   font-size: 0.65rem;
   color: var(--muted);
@@ -320,7 +323,7 @@ tbody tr:last-child > * {
 .jump-d {
   top: 0;
   left: 50%;
-  translate: -50% -50%;
+  translate: -50% -60%;
 }
 
 @function --tint(--c) {
