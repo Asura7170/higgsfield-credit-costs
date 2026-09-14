@@ -255,7 +255,7 @@ summary:focus-visible,
   outline-offset: 2px;
 }
 
-/* ponytail: native masonry — columns pack independently, no middle voids. */
+/* ponytail: balanced columns pack like masonry; uneven tiles may unbalance columns. */
 #app {
   columns: 1;
 }

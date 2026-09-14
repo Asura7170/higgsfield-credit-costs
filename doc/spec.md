@@ -66,7 +66,7 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 `.reveal` sections fade up via scroll-driven `animation-timeline: view()` (no JS, no noscript); pick stagger uses `sibling-index()`;
 `.more-picks::details-content` animates open/close via `calc-size()`; `#copy-cmd` sticks right inside `.cmd-bar` while the command scrolls.
 Tables use `separate` + `spacing: 0` 1px grid (first body row drops its top border so the thead junction stays 1px); `td` and `thead th` centered; jump labels are frosted pills (translucent surface + `blur(3px)`, radius `99px`), hover/active `scale: 1.25`.
-Masonry: `#app { columns: 2; column-gap: 1rem }`, `.model` tiles reuse surface/border/`--radius`/`edge-highlight` with `container-type: inline-size` (cell padding compacts under `26rem`) and `content-visibility: visible` (placeholders would unbalance columns mid-scroll).
+Masonry: `#app { columns: 2; column-gap: 1rem }`, `.model` tiles reuse surface/border/`--radius`/`edge-highlight` with `container-type: inline-size` (cell padding compacts under `26rem`) and `content-visibility: visible` (placeholders would unbalance columns mid-scroll). Shell max `80rem`; row-header column collapses via `width: 1px`; body rows min `3.5rem`; header rhythm `padding-top + margin-top: 1rem`, `.hero-sub` margins `1rem 0 2rem`.
 
 ## 7. Edge cases
 
