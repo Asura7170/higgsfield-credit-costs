@@ -355,6 +355,12 @@ tbody th {
   width: 1px;
 }
 
+/* ponytail: height is a minimum in table layout — evens out short tables. */
+tbody th,
+tbody td {
+  height: 3.5rem;
+}
+
 td {
   text-align: center;
   position: relative;
