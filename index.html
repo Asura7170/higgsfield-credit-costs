@@ -8,6 +8,15 @@
       name="description"
       content="Compare Higgsfield image-model credit costs across qualities and resolutions."
     />
+    <meta property="og:title" content="Higgsfield cost dashboard" />
+    <meta
+      property="og:description"
+      content="Compare Higgsfield image-model credit costs across qualities and resolutions."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f8f5" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#030304" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -24,6 +33,7 @@
     >
   </head>
   <body>
+    <a class="skip-link" href="#app">Skip to content</a>
     <header>
       <h1>Higgsfield cost dashboard</h1>
       <p id="updated">Loading cost data…</p>
@@ -51,7 +61,7 @@
         </svg>
       </button>
     </header>
-    <main id="app"></main>
+    <main id="app" tabindex="-1"></main>
     <section aria-labelledby="legend-h" class="reveal">
       <h2 id="legend-h">Legend</h2>
       <ul>
@@ -66,10 +76,39 @@
       disproportionately more; combos dominated on quality, resolution, and price rank red.
     </p>
     <dialog id="how-dialog" closedby="any" aria-labelledby="how-h">
-      <h2 id="how-h">How to update</h2>
-      <p>Refresh the data file with the higgsfield CLI, then reload:</p>
-      <pre><code>powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
-      <button type="button" commandfor="how-dialog" command="close">Close</button>
+      <div class="dialog-head">
+        <h2 id="how-h">How to update</h2>
+        <button
+          class="dialog-x"
+          type="button"
+          commandfor="how-dialog"
+          command="close"
+          aria-label="Close"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M6 6l12 12M18 6 6 18"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <ol class="steps">
+        <li>Log in with the higgsfield CLI.</li>
+        <li>Run the refresh command, then reload this page.</li>
+      </ol>
+      <div class="cmd-bar" aria-label="Refresh command">
+        <div class="cmd-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="cmd-line">
+          <span class="cmd-prompt" aria-hidden="true">❯</span>
+          <pre><code id="refresh-cmd">powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
+          <button id="copy-cmd" type="button">Copy</button>
+        </div>
+      </div>
+      <p class="copy-note" aria-live="polite"></p>
     </dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>

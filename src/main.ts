@@ -208,6 +208,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   const li = document.createElement("li");
   li.className = `pick tier-${c.tier}${c.top ? " top" : ""}`;
   li.title = c.reason;
+  li.style.setProperty("--index", `${rank}`);
   const line = document.createElement("p");
   line.className = "pick-line";
   const rankEl = document.createElement("span");
@@ -320,6 +321,38 @@ function render(results: ModelResult[]): void {
   initReveals();
 }
 
+function initCopyButton(): void {
+  const btn = document.querySelector("#copy-cmd");
+  const code = document.querySelector("#refresh-cmd");
+  const note = document.querySelector(".copy-note");
+  if (!(btn instanceof HTMLButtonElement) || !code || !note) return;
+  const selectForManualCopy = (): void => {
+    const range = document.createRange();
+    range.selectNodeContents(code);
+    const sel = getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  };
+  btn.addEventListener("click", () => {
+    const done = (): void => {
+      btn.textContent = "Copied ✓";
+      note.textContent = "Command copied to clipboard.";
+      window.setTimeout(() => {
+        btn.textContent = "Copy";
+      }, 2000);
+    };
+    const fallback = (): void => {
+      selectForManualCopy();
+      note.textContent = "Copy unavailable — command selected, press Ctrl+C.";
+    };
+    if (!navigator.clipboard) {
+      fallback();
+      return;
+    }
+    navigator.clipboard.writeText(code.textContent ?? "").then(done, fallback);
+  });
+}
+
 function initReveals(): void {
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
@@ -397,5 +430,6 @@ async function boot(): Promise<void> {
 if (typeof document !== "undefined") {
   initTheme();
   initReveals();
+  initCopyButton();
   void boot();
 }
