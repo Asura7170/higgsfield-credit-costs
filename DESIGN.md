@@ -47,3 +47,4 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
 - **Motion:** `var(--ease-out)` everywhere, `transform`/`opacity` only; sections `.reveal` fade up via scroll-driven `animation-timeline: view()` (no JS); `prefers-reduced-motion` kills everything.
 - **Contrast:** AA everywhere, both themes — CTA is lime on near-black, tiers are 22% tints behind `--text`.
 - **Theme:** header `#theme-toggle` is a circular 44px surface button with a lime sun/moon icon (shows the target mode); it flips `html[data-theme]` (persisted in `localStorage`); unset = OS decides via `color-scheme`. No per-section inversion.
+- **Header layout:** two flex rows — `.hero-top` (title + theme, `space-between`) / `.hero-sub` (How-to button + `time#updated` caption, `flex-start`). DOM order matches visual order, no `order` overrides.
