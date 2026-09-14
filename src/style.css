@@ -310,6 +310,26 @@ tbody tr:last-child > * {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   user-select: none;
+  transition:
+    scale 0.15s var(--ease-out),
+    color 0.15s var(--ease-out);
+}
+
+.jump-r::before,
+.jump-d::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+}
+
+.jump-r:hover,
+.jump-r:active,
+.jump-d:hover,
+.jump-d:active {
+  z-index: 3;
+  scale: 1.25;
+  color: var(--text);
+  cursor: default;
 }
 
 .jump-r {
