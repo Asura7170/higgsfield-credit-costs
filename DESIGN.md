@@ -1,22 +1,46 @@
 # DESIGN.md — Higgsfield cost dashboard tokens
 
-Dark-only neon-minimalist. Single source of truth for color/surface/radius; `src/style.css` references these, no duplicates.
+Dark + light, neon-minimalist, Higgsfield brand. Single source of truth; `src/style.css`
+references these tokens, no duplicates. One accent (lime), one radius, theme follows the OS.
 
 ```css
 :root {
-  color-scheme: dark;
-  --bg: linear-gradient(#0f1113, #030304);
-  --surface: #1a1a1a;
-  --text: #ffffff;
-  --muted: #929292;
-  --border: rgba(255, 255, 255, 0.08);
-  --radius: 12px;
+  color-scheme: light dark;
+
+  /* Primitives (brand) */
+  --woodsmoke: #0f1113;
   --lime: #d1fe17;
-  --on-lime: #1a1a1a;
-  --green: #22c55e;
-  --yellow: #eab308;
-  --red: #ef4444;
+  --ink: #1a1a1a;
+  --paper: #f2f4ec;
+
+  /* Semantic */
+  --bg: light-dark(#f7f8f5, linear-gradient(#0f1113, #030304));
+  --surface: light-dark(#ffffff, #1a1a1a);
+  --text: light-dark(#17191d, var(--paper));
+  --muted: light-dark(#5b636a, #929292);
+  --border: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.08));
+  --brand: var(--lime);
+  --on-brand: var(--ink);
+  --focus: light-dark(#3f6212, var(--lime));
+  --tier-high: #22c55e;
+  --tier-mid: #eab308;
+  --tier-low: #ef4444;
+
+  /* Shape, type, motion */
+  --radius: 12px;
+  --cta-shadow: light-dark(0 1px 2px rgba(0, 0, 0, 0.12), 0 0 1.5rem rgba(209, 254, 23, 0.25));
   --font-body: "Inter", system-ui, sans-serif;
   --font-display: "Space Grotesk", system-ui, sans-serif;
 }
 ```
+
+## Rules
+
+- **Color lock:** lime is the only decorative accent. Tier colors are data status only, never decoration.
+- **Shape lock:** `--radius` everywhere; no pills, no mixed radii.
+- **Data figures:** `font-variant-numeric: tabular-nums` on all tables and prices.
+- **Prose measure:** max `65ch` for paragraphs.
+- **Focus:** 2px `var(--focus)` outline with 2px offset, always visible.
+- **Motion:** `transform`/`opacity` only; `prefers-reduced-motion` kills everything.
+- **Contrast:** AA everywhere, both themes — CTA is lime on near-black, tiers are 22% tints behind `--text`.
+- **Theme:** header `#theme-toggle` flips `html[data-theme]` (persisted in `localStorage`); unset = OS decides via `color-scheme`. No per-section inversion.

@@ -9,7 +9,7 @@ Objective: read-only page ranking every quality × resolution combo per model by
 Goals: one table per model, tier per cell (green/yellow/red), "Best combinations" list, top-pick stars.
 
 Non-goals: no backend, no auth, no editing/refreshing data in-page (dialog only shows the command),
-no filters/sorting controls, no i18n (English only), no light theme.
+no filters/sorting controls, no i18n (English only). Light + dark themes follow the OS.
 
 ## 2. Constraints
 
@@ -53,7 +53,7 @@ Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
 
 ## 5. DOM contract
 
-- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update"; `main#app` (TS-rendered sections per model: `h2` `<id> — N combos`, `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations", `ol` of picks); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
+- `index.html`: semantic, one `h1` "Higgsfield cost dashboard"; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: `h2` `<id> — N combos`, `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations", `ol` of picks); `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command.
 - Fetch failure / malformed JSON → `p#updated` shows error, `main#app` shows one `p` error message, no tables.
 
 ## 6. Style contract
@@ -74,4 +74,4 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 ## 8. File map + Verify
 
 - `index.html` (shell) → `src/main.ts` (fetch + algorithm + render) → `src/style.css` (tokens from `DESIGN.md`). New: `DESIGN.md` (tokens only).
-- Verify: `vp check`, `vp build` (`tsc`), `vp test` clean; Chrome 375px (tables scroll, page not) + 1280px; keyboard reaches button/dialog/table; dialog closes via `closedby`; reduced-motion kills animation.
+- Verify: `vp check`, `vp build` (`tsc`), `vp test` clean; Chrome 375px (tables scroll, page not) + 1280px, light + dark; keyboard reaches button/dialog/table; dialog closes via `closedby`; reduced-motion kills animation.

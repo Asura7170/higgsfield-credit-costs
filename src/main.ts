@@ -259,6 +259,44 @@ function fail(message: string): void {
   app.replaceChildren(p);
 }
 
+const THEME_KEY = "higgsfield-theme";
+
+function systemTheme(): string {
+  return matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+}
+
+function paintThemeButton(): void {
+  const btn = document.querySelector("#theme-toggle");
+  if (btn)
+    btn.textContent =
+      (document.documentElement.dataset.theme ?? systemTheme()) === "dark"
+        ? "Light mode"
+        : "Dark mode";
+}
+
+function initTheme(): void {
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(THEME_KEY);
+    // ponytail: private-mode storage throws; system theme is the fallback.
+  } catch {
+    stored = null;
+  }
+  if (stored === "light" || stored === "dark") document.documentElement.dataset.theme = stored;
+  paintThemeButton();
+  document.querySelector("#theme-toggle")?.addEventListener("click", () => {
+    const next =
+      (document.documentElement.dataset.theme ?? systemTheme()) === "dark" ? "light" : "dark";
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      // ponytail: theme still flips for the session without persistence.
+    }
+    document.documentElement.dataset.theme = next;
+    paintThemeButton();
+  });
+}
+
 async function boot(): Promise<void> {
   try {
     const res = await fetch("higgsfield-costs.json");
@@ -272,4 +310,7 @@ async function boot(): Promise<void> {
   }
 }
 
-if (typeof document !== "undefined") void boot();
+if (typeof document !== "undefined") {
+  initTheme();
+  void boot();
+}
