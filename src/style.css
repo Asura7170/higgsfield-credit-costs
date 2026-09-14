@@ -302,7 +302,6 @@ tbody tr:last-child > * {
 .jump-d {
   position: absolute;
   z-index: 1;
-  background: var(--surface);
   padding-inline: 0.25em;
   font-size: 0.65rem;
   color: var(--muted);
