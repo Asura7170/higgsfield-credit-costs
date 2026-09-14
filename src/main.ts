@@ -328,9 +328,15 @@ function renderModel(m: ModelResult): HTMLElement {
         }
         td.className = `tier-${cell.tier}${cell.top ? " top" : ""}`;
         td.title = cell.reason;
+        const tierWord =
+          cell.tier === "green"
+            ? "best value"
+            : cell.tier === "yellow"
+              ? "fair value"
+              : "poor value";
         td.setAttribute(
           "aria-label",
-          `${cell.price} credits${jumps.length > 0 ? `, ${jumps.join(", ")}` : ", base"}`,
+          `${cell.price} credits, ${tierWord}${cell.top ? ", top pick" : ""}${jumps.length > 0 ? `, ${jumps.join(", ")}` : ", base"}`,
         );
       } else {
         td.textContent = "n/a";

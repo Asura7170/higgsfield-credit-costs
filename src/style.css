@@ -277,11 +277,11 @@ td {
   border-width: 1px 1px 0 0;
   text-align: start;
   white-space: nowrap;
-  position: relative;
 }
 
 td {
   text-align: center;
+  position: relative;
 }
 
 thead th {
@@ -297,6 +297,11 @@ tbody tr:last-child > * {
   border-bottom-width: 1px;
 }
 
+/* ponytail: thead bottom + first-row top would stack to 2px in separate mode. */
+tbody tr:first-child > * {
+  border-top-width: 0;
+}
+
 /* ponytail: jump labels ride the cell (not the text) so column stretch can't offset them. */
 .jump-r,
 .jump-d {
@@ -306,13 +311,14 @@ tbody tr:last-child > * {
   border-radius: 99px;
   padding-inline: 0.25em;
   font-size: 0.65rem;
-  color: var(--muted);
+  color: var(--text);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   user-select: none;
+  opacity: 0.75;
   transition:
     scale 0.15s var(--ease-out),
-    color 0.15s var(--ease-out);
+    opacity 0.15s var(--ease-out);
 }
 
 .jump-r::before,
@@ -328,7 +334,7 @@ tbody tr:last-child > * {
 .jump-d:active {
   z-index: 3;
   scale: 1.25;
-  color: var(--text);
+  opacity: 1;
   cursor: default;
 }
 
