@@ -384,24 +384,12 @@ function renderModel(m: ModelResult): HTMLElement {
   return section;
 }
 
-// ponytail: append() moves live nodes — static legend+method become the 5th tile.
-function legendTile(): HTMLElement | null {
-  const legend = document.querySelector("section[aria-labelledby='legend-h']");
-  const method = document.querySelector("#method");
-  if (!legend || !method) return null;
-  const tile = document.createElement("section");
-  tile.className = "reveal model legend-tile";
-  tile.append(...legend.childNodes, method);
-  legend.remove();
-  return tile;
-}
-
 function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
-  const tile = legendTile();
+  // ponytail: fill-4 covers the pinned 4-model snapshot; other counts stay sparse.
+  app.classList.toggle("fill-4", results.length === 4);
   app.replaceChildren(...results.map(renderModel));
-  if (tile) app.append(tile);
 }
 
 function initCopyButton(): void {
