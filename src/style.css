@@ -216,7 +216,7 @@ header,
 main,
 section:not(.model),
 #method {
-  max-width: 64rem;
+  max-width: 80rem;
   margin-inline: auto;
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
