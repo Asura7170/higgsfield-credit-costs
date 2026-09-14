@@ -264,7 +264,8 @@ summary:focus-visible,
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   font-variant-numeric: tabular-nums;
 }
@@ -272,9 +273,51 @@ table {
 th,
 td {
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
+  border: 0 solid var(--border);
+  border-width: 1px 1px 0 0;
   text-align: start;
   white-space: nowrap;
+}
+
+tr > :first-child {
+  border-left-width: 1px;
+}
+
+thead tr > *,
+tbody tr:last-child > * {
+  border-bottom-width: 1px;
+}
+
+/* ponytail: jump labels live ON the grid lines via data attrs; zerolayout cost, not selectable. */
+td .c {
+  position: relative;
+}
+
+td .c[data-r]::after,
+td .c[data-d]::before {
+  position: absolute;
+  z-index: 1;
+  background: var(--surface);
+  padding-inline: 0.25em;
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+td .c[data-r]::after {
+  content: attr(data-r) / "";
+  right: -1rem;
+  top: 50%;
+  translate: 50% -50%;
+  z-index: 2;
+}
+
+td .c[data-d]::before {
+  content: attr(data-d) / "";
+  bottom: -0.75rem;
+  left: 0;
+  translate: 0 50%;
 }
 
 @function --tint(--c) {
