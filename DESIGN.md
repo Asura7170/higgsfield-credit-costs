@@ -8,7 +8,6 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
   color-scheme: light dark;
 
   /* Primitives (brand) */
-  --woodsmoke: #0f1113;
   --lime: #d1fe17;
   --ink: #1a1a1a;
   --paper: #f2f4ec;

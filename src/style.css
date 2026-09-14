@@ -3,7 +3,6 @@
   interpolate-size: allow-keywords;
 
   /* Primitives (brand) */
-  --woodsmoke: #0f1113;
   --lime: #d1fe17;
   --ink: #1a1a1a;
   --paper: #f2f4ec;
@@ -209,9 +208,9 @@ p {
   text-wrap: pretty;
 }
 
-section {
+section:not(.model) {
   content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
+  contain-intrinsic-size: auto 120px;
 }
 
 header,
