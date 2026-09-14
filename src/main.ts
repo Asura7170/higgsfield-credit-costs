@@ -223,6 +223,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   line.className = "pick-line";
   const rankEl = document.createElement("span");
   rankEl.className = "pick-rank";
+  rankEl.setAttribute("aria-hidden", "true");
   rankEl.textContent = `${rank}`;
   const combo = document.createElement("strong");
   combo.textContent = `${cap(c.q)} - ${c.r}`;
@@ -257,6 +258,9 @@ function renderModel(m: ModelResult): HTMLElement {
 
   const wrap = document.createElement("div");
   wrap.className = "table-wrap";
+  wrap.tabIndex = 0;
+  wrap.setAttribute("role", "region");
+  wrap.setAttribute("aria-label", `${displayName(m.id)} costs`);
   const table = document.createElement("table");
   const head = document.createElement("tr");
   head.append(document.createElement("th"));
@@ -313,7 +317,11 @@ function renderModel(m: ModelResult): HTMLElement {
     det.className = "more-picks";
     det.name = "more-picks";
     const sum = document.createElement("summary");
-    sum.textContent = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
+    const moreLabel = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
+    sum.textContent = moreLabel;
+    det.addEventListener("toggle", () => {
+      sum.textContent = det.open ? "Show fewer combinations" : moreLabel;
+    });
     const restOl = document.createElement("ol");
     restOl.className = "picks";
     restOl.start = shown.length + 1;

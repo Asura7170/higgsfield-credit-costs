@@ -59,7 +59,7 @@
         <button id="how-open" type="button" commandfor="how-popover" command="toggle-popover">
           How to update
         </button>
-        <p><time id="updated" datetime="">Loading cost data…</time></p>
+        <p><time id="updated">Loading cost data…</time></p>
       </div>
     </header>
     <main id="app" tabindex="-1"></main>
@@ -76,7 +76,7 @@
       Each combo scores quality plus resolution per credit, penalized when a neighbor costs
       disproportionately more; combos dominated on quality, resolution, and price rank red.
     </p>
-    <div id="how-popover" popover="auto" closedby="any" aria-labelledby="how-h">
+    <div id="how-popover" popover="auto" closedby="any" role="dialog" aria-labelledby="how-h">
       <div class="dialog-head">
         <h2 id="how-h">How to update</h2>
         <button

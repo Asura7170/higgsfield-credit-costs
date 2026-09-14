@@ -14,7 +14,8 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
   --paper: #f2f4ec;
 
   /* Semantic */
-  --bg: light-dark(#f7f8f5, linear-gradient(#0f1113, #030304));
+  --bg: light-dark(#f7f8f5, #0f1113);
+  /* ponytail: dark gradient lives on body (light-dark takes colors only) */
   --surface: light-dark(#ffffff, #1a1a1a);
   --text: light-dark(#17191d, var(--paper));
   --muted: light-dark(#5b636a, #929292);
@@ -29,7 +30,8 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
 
   /* Shape, type, motion */
   --radius: 12px;
-  --cta-shadow: light-dark(0 1px 2px rgba(0, 0, 0, 0.12), 0 0 1.5rem rgba(209, 254, 23, 0.25));
+  /* ponytail: CTA shadow is per-theme CSS (light-dark takes colors only):
+     light 0 1px 2px rgba(0,0,0,.12), dark 0 0 1.5rem rgba(209,254,23,.25) */
   --edge-highlight: light-dark(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.06));
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
