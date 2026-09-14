@@ -19,7 +19,7 @@ const MODEL_NAMES: Record<string, string> = {
   nano_banana_pro: "Nano Banana Pro",
 };
 
-function displayName(id: string): string {
+export function displayName(id: string): string {
   return MODEL_NAMES[id] ?? id.replaceAll("_", " ");
 }
 
@@ -204,6 +204,13 @@ export function verdict(reason: string): string {
   return reason;
 }
 
+export function splitPicks(picks: Cell[]): { shown: Cell[]; hidden: Cell[] } {
+  const tops = picks.filter((c) => c.top);
+  return tops.length > 0
+    ? { shown: tops, hidden: picks.filter((c) => !c.top) }
+    : { shown: picks.slice(0, 1), hidden: picks.slice(1) };
+}
+
 function pickItem(c: Cell, rank: number): HTMLElement {
   const li = document.createElement("li");
   li.className = `pick tier-${c.tier}${c.top ? " top" : ""}`;
@@ -291,10 +298,7 @@ function renderModel(m: ModelResult): HTMLElement {
     section.append(p);
     return section;
   }
-  const tops = m.picks.filter((c) => c.top);
-  const rest = m.picks.filter((c) => !c.top);
-  const shown = tops.length > 0 ? tops : m.picks.slice(0, 1);
-  const hidden = tops.length > 0 ? rest : m.picks.slice(1);
+  const { shown, hidden } = splitPicks(m.picks);
   const ol = document.createElement("ol");
   ol.className = "picks";
   shown.forEach((c, i) => ol.append(pickItem(c, i + 1)));

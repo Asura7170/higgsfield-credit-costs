@@ -436,9 +436,9 @@ dialog::backdrop {
   position: sticky;
   right: 0;
   align-self: center;
-  min-height: 2rem;
-  min-width: 0;
-  padding: 0.25rem 0.875rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.625rem 1rem;
   font-size: 0.8rem;
 }
 

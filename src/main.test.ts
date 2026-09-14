@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { scoreModel, verdict, type Cell } from "./main.ts";
+import { displayName, scoreModel, splitPicks, verdict, type Cell } from "./main.ts";
 
 const rankKey = (c: Cell): number[] => [-c.score, c.price, -c.utility, c.qi, c.ri];
 const ordered = (a: number[], b: number[]): boolean => {
@@ -79,6 +79,49 @@ describe("verdict", () => {
     expect(verdict("+100% vs low")).toBe("Pays +100% over low quality.");
     expect(verdict("next 2k +25% (cheap upgrade)")).toBe("Next step 2k costs +25% — worth it.");
     expect(verdict("next high +100% (steep climb)")).toBe("Next step high costs +100% — pricey.");
+  });
+
+  it("passes unknown reasons through untouched", () => {
+    const raw = "Dominated by b @ 1x at same price (1 credits) — never pay same for less";
+    expect(verdict(raw)).toBe(raw);
+  });
+});
+
+describe("displayName", () => {
+  it("maps known ids and falls back to spaces for unknown ones", () => {
+    expect(displayName("nano_banana_pro")).toBe("Nano Banana Pro");
+    expect(displayName("foo_bar")).toBe("foo bar");
+  });
+});
+
+describe("splitPicks", () => {
+  const cell = (q: string, top = false): Cell => ({
+    q,
+    r: "1k",
+    qi: 0,
+    ri: 0,
+    price: 1,
+    utility: 1,
+    score: 1,
+    tier: "green",
+    reason: "base combo",
+    top,
+  });
+
+  it("shows starred tops and hides the rest", () => {
+    const { shown, hidden } = splitPicks([cell("a", true), cell("b"), cell("c")]);
+    expect(shown.map((c) => c.q)).toEqual(["a"]);
+    expect(hidden.map((c) => c.q)).toEqual(["b", "c"]);
+  });
+
+  it("falls back to the first pick when nothing is starred", () => {
+    const { shown, hidden } = splitPicks([cell("a"), cell("b")]);
+    expect(shown.map((c) => c.q)).toEqual(["a"]);
+    expect(hidden.map((c) => c.q)).toEqual(["b"]);
+  });
+
+  it("returns empty splits for empty picks", () => {
+    expect(splitPicks([])).toEqual({ shown: [], hidden: [] });
   });
 });
 
