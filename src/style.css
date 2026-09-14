@@ -9,7 +9,7 @@
   --paper: #f2f4ec;
 
   /* Semantic */
-  --bg: light-dark(#f7f8f5, linear-gradient(#0f1113, #030304));
+  --bg: light-dark(#f7f8f5, #0f1113);
   --surface: light-dark(#ffffff, #1a1a1a);
   --text: light-dark(#17191d, var(--paper));
   --muted: light-dark(#5b636a, #929292);
@@ -17,6 +17,10 @@
   --brand: var(--lime);
   --brand-deep: #1a2e05;
   --on-brand: var(--ink);
+  /* ponytail: contrast-color() needs Chrome 147; fallback above keeps AA today. */
+  @supports (color: contrast-color(#000)) {
+    --on-brand: contrast-color(var(--lime));
+  }
   --focus: light-dark(#3f6212, var(--lime));
   --tier-high: #22c55e;
   --tier-mid: #eab308;
@@ -24,7 +28,6 @@
 
   /* Shape, type, motion */
   --radius: 12px;
-  --cta-shadow: light-dark(0 1px 2px rgba(0, 0, 0, 0.12), 0 0 1.5rem rgba(209, 254, 23, 0.25));
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
@@ -68,16 +71,44 @@ body {
   font-family: var(--font-body);
 }
 
+html[data-theme="dark"] body {
+  background-image: linear-gradient(#0f1113, #030304);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) body {
+    background-image: linear-gradient(#0f1113, #030304);
+  }
+}
+
 header {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   padding-top: 1rem;
 }
 
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hero-sub {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero-sub p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
 header h1 {
-  flex: 1;
   margin: 0;
 }
 
@@ -129,7 +160,7 @@ header h1 {
 
 body,
 .table-wrap,
-dialog,
+#how-popover,
 th,
 td,
 button {
@@ -141,16 +172,16 @@ button {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(16px);
+  animation: reveal-in 0.7s var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 50%;
 }
 
-.reveal.in {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.7s var(--ease-out),
-    transform 0.7s var(--ease-out);
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 h1 {
@@ -164,6 +195,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   text-wrap: balance;
+  text-box: trim-both cap alphabetic;
 }
 
 #app h2 {
@@ -175,13 +207,18 @@ p {
   text-wrap: pretty;
 }
 
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
 header,
 main,
 section,
 #method {
   max-width: 64rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
 button {
@@ -195,11 +232,23 @@ button {
   font: inherit;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: var(--cta-shadow);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="dark"] button {
+  box-shadow: 0 0 1.5rem rgba(209, 254, 23, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) button {
+    box-shadow: 0 0 1.5rem rgba(209, 254, 23, 0.25);
+  }
 }
 
 button:focus-visible,
-a:focus-visible {
+a:focus-visible,
+summary:focus-visible,
+.table-wrap:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
@@ -210,6 +259,8 @@ a:focus-visible {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: inset 0 1px 0 var(--edge-highlight);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--muted) 40%, transparent) transparent;
 }
 
 table {
@@ -226,16 +277,23 @@ td {
   white-space: nowrap;
 }
 
+@function --tint(--c) {
+  result: color-mix(in oklch, var(--c) 22%, transparent);
+}
+
 td.tier-green {
   background: color-mix(in oklch, var(--tier-high) 22%, transparent);
+  background: --tint(var(--tier-high));
 }
 
 td.tier-yellow {
   background: color-mix(in oklch, var(--tier-mid) 22%, transparent);
+  background: --tint(var(--tier-mid));
 }
 
 td.tier-red {
   background: color-mix(in oklch, var(--tier-low) 22%, transparent);
+  background: --tint(var(--tier-low));
 }
 
 td.tier-red::before {
@@ -245,17 +303,12 @@ td.tier-red::before {
 
 td.top::after {
   content: " ★";
-  color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
 }
 
-#updated {
-  flex: 1 1 100%;
-  order: 2;
-  margin: 0;
-}
-
-#how-open {
-  order: 3;
+body:has(#how-popover:popover-open) #how-open {
+  border-color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
 }
 
 #method,
@@ -289,7 +342,11 @@ section p,
   background: var(--tier-low);
 }
 
-dialog {
+#how-popover {
+  /* ponytail: dialog:modal UA centering — margin:auto + fixed insets; top layer does the rest */
+  margin: auto;
+  inset: 0;
+  position: fixed;
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
@@ -297,22 +354,35 @@ dialog {
   box-shadow: inset 0 1px 0 var(--edge-highlight);
   max-inline-size: min(32rem, calc(100dvw - 2rem));
   padding: 1.5rem;
+  width: stretch;
   transition:
     opacity 0.25s var(--ease-out),
-    transform 0.25s var(--ease-out),
-    display 0.25s allow-discrete,
-    overlay 0.25s allow-discrete;
+    transform 0.25s var(--ease-out);
 }
 
-dialog::backdrop {
+#how-popover:popover-open {
+  opacity: 1;
+  transform: none;
+}
+
+#how-popover::backdrop {
+  opacity: 0;
   background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(2px);
+  transition: opacity 0.25s var(--ease-out);
+}
+
+#how-popover:popover-open::backdrop {
+  opacity: 1;
 }
 
 @starting-style {
-  dialog[open] {
+  #how-popover:popover-open {
     opacity: 0;
     transform: translateY(12px);
+  }
+
+  #how-popover::backdrop {
+    opacity: 0;
   }
 }
 
@@ -343,7 +413,7 @@ dialog::backdrop {
 
 .dialog-x:hover {
   border-color: var(--brand);
-  color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
 }
 
 .dialog-x svg {
@@ -376,7 +446,7 @@ dialog::backdrop {
   content: counter(steps, decimal-leading-zero);
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
   font-variant-numeric: tabular-nums;
 }
 
@@ -455,17 +525,25 @@ ol.picks {
   gap: 0.75rem;
 }
 
+@supports (corner-shape: scoop) {
+  .pick {
+    corner-shape: scoop;
+  }
+}
+
 .pick {
   border: 1px solid var(--border);
   border-inline-start: 4px solid var(--border);
+  border-inline-end: 4px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: inset 0 1px 0 var(--edge-highlight);
   padding: 0.75rem 1rem;
-  display: grid;
-  gap: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   animation: pick-in 0.5s var(--ease-out) both;
-  animation-delay: calc(var(--index, 0) * 70ms);
+  animation-delay: calc(sibling-index() * 70ms);
 }
 
 @keyframes pick-in {
@@ -477,14 +555,24 @@ ol.picks {
 
 .pick.tier-green {
   border-inline-start-color: var(--tier-high);
+  border-inline-end-color: var(--tier-high);
 }
 
 .pick.tier-yellow {
   border-inline-start-color: var(--tier-mid);
+  border-inline-end-color: var(--tier-mid);
 }
 
 .pick.tier-red {
   border-inline-start-color: var(--tier-low);
+  border-inline-end-color: var(--tier-low);
+}
+
+.pick-main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.25rem;
 }
 
 .pick-line {
@@ -500,14 +588,13 @@ ol.picks {
 }
 
 .pick-price {
-  margin-inline-start: auto;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .pick .star {
-  color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
 }
 
 .pick-verdict {
@@ -529,10 +616,6 @@ ol.picks {
   border-radius: 999px;
   background: var(--surface);
   color: var(--text);
-}
-
-.more-picks summary::-webkit-details-marker {
-  display: none;
 }
 
 .more-picks summary::marker {
@@ -559,6 +642,18 @@ ol.picks {
 
 .more-picks[open] summary::after {
   transform: rotate(45deg);
+}
+
+.more-picks::details-content {
+  block-size: 0;
+  overflow-y: clip;
+  transition:
+    block-size 0.3s var(--ease-out),
+    content-visibility 0.3s allow-discrete;
+}
+
+.more-picks[open]::details-content {
+  block-size: calc-size(auto, size);
 }
 
 pre {

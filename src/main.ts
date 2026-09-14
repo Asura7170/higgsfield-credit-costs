@@ -23,6 +23,10 @@ export function displayName(id: string): string {
   return MODEL_NAMES[id] ?? id.replaceAll("_", " ");
 }
 
+function cap(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 type Tier = "green" | "yellow" | "red";
 
 interface CostFile {
@@ -215,14 +219,14 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   const li = document.createElement("li");
   li.className = `pick tier-${c.tier}${c.top ? " top" : ""}`;
   li.title = c.reason;
-  li.style.setProperty("--index", `${rank}`);
   const line = document.createElement("p");
   line.className = "pick-line";
   const rankEl = document.createElement("span");
   rankEl.className = "pick-rank";
+  rankEl.setAttribute("aria-hidden", "true");
   rankEl.textContent = `${rank}`;
   const combo = document.createElement("strong");
-  combo.textContent = `${c.q} @ ${c.r}`;
+  combo.textContent = `${cap(c.q)} - ${c.r}`;
   line.append(rankEl, combo);
   if (c.top) {
     const star = document.createElement("span");
@@ -235,11 +239,13 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   const price = document.createElement("span");
   price.className = "pick-price";
   price.textContent = `${c.price} credits`;
-  line.append(price);
   const say = document.createElement("p");
   say.className = "pick-verdict";
   say.textContent = verdict(c.reason);
-  li.append(line, say);
+  const main = document.createElement("div");
+  main.className = "pick-main";
+  main.append(line, say);
+  li.append(main, price);
   return li;
 }
 
@@ -252,6 +258,9 @@ function renderModel(m: ModelResult): HTMLElement {
 
   const wrap = document.createElement("div");
   wrap.className = "table-wrap";
+  wrap.tabIndex = 0;
+  wrap.setAttribute("role", "region");
+  wrap.setAttribute("aria-label", `${displayName(m.id)} costs`);
   const table = document.createElement("table");
   const head = document.createElement("tr");
   head.append(document.createElement("th"));
@@ -269,7 +278,7 @@ function renderModel(m: ModelResult): HTMLElement {
     const tr = document.createElement("tr");
     const th = document.createElement("th");
     th.scope = "row";
-    th.textContent = q;
+    th.textContent = cap(q);
     tr.append(th);
     for (const r of m.resolutions) {
       const td = document.createElement("td");
@@ -306,8 +315,13 @@ function renderModel(m: ModelResult): HTMLElement {
   if (hidden.length > 0) {
     const det = document.createElement("details");
     det.className = "more-picks";
+    det.name = "more-picks";
     const sum = document.createElement("summary");
-    sum.textContent = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
+    const moreLabel = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
+    sum.textContent = moreLabel;
+    det.addEventListener("toggle", () => {
+      sum.textContent = det.open ? "Show fewer combinations" : moreLabel;
+    });
     const restOl = document.createElement("ol");
     restOl.className = "picks";
     restOl.start = shown.length + 1;
@@ -322,7 +336,6 @@ function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
   app.replaceChildren(...results.map(renderModel));
-  initReveals();
 }
 
 function initCopyButton(): void {
@@ -357,20 +370,8 @@ function initCopyButton(): void {
   });
 }
 
-function initReveals(): void {
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        io.unobserve(e.target);
-      }
-    }
-  });
-  for (const el of document.querySelectorAll(".reveal:not(.in)")) io.observe(el);
-}
-
 function fail(message: string): void {
-  const updated = document.querySelector("#updated");
+  const updated = document.querySelector("time#updated");
   if (updated) updated.textContent = "Could not load cost data.";
   const app = document.querySelector("#app");
   if (!app) return;
@@ -424,8 +425,11 @@ async function boot(): Promise<void> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = (await res.json()) as CostFile;
     render(Object.entries(data.models).map(([id, m]) => scoreModel(id, m)));
-    const updated = document.querySelector("#updated");
-    if (updated) updated.textContent = `Updated ${data.updatedAt}`;
+    const updated = document.querySelector("time#updated");
+    if (updated instanceof HTMLTimeElement) {
+      updated.dateTime = data.updatedAt;
+      updated.textContent = `Updated ${data.updatedAt}`;
+    }
   } catch (err) {
     fail(`Could not load cost data. ${err instanceof Error ? err.message : ""}`.trim());
   }
@@ -433,7 +437,6 @@ async function boot(): Promise<void> {
 
 if (typeof document !== "undefined") {
   initTheme();
-  initReveals();
   initCopyButton();
   void boot();
 }
