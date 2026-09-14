@@ -215,7 +215,6 @@ function pickItem(c: Cell, rank: number): HTMLElement {
   const li = document.createElement("li");
   li.className = `pick tier-${c.tier}${c.top ? " top" : ""}`;
   li.title = c.reason;
-  li.style.setProperty("--index", `${rank}`);
   const line = document.createElement("p");
   line.className = "pick-line";
   const rankEl = document.createElement("span");
@@ -306,6 +305,7 @@ function renderModel(m: ModelResult): HTMLElement {
   if (hidden.length > 0) {
     const det = document.createElement("details");
     det.className = "more-picks";
+    det.name = "more-picks";
     const sum = document.createElement("summary");
     sum.textContent = `Show ${hidden.length} more combination${hidden.length === 1 ? "" : "s"}`;
     const restOl = document.createElement("ol");
@@ -322,7 +322,6 @@ function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
   app.replaceChildren(...results.map(renderModel));
-  initReveals();
 }
 
 function initCopyButton(): void {
@@ -357,20 +356,8 @@ function initCopyButton(): void {
   });
 }
 
-function initReveals(): void {
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        io.unobserve(e.target);
-      }
-    }
-  });
-  for (const el of document.querySelectorAll(".reveal:not(.in)")) io.observe(el);
-}
-
 function fail(message: string): void {
-  const updated = document.querySelector("#updated");
+  const updated = document.querySelector("time#updated");
   if (updated) updated.textContent = "Could not load cost data.";
   const app = document.querySelector("#app");
   if (!app) return;
@@ -424,8 +411,11 @@ async function boot(): Promise<void> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = (await res.json()) as CostFile;
     render(Object.entries(data.models).map(([id, m]) => scoreModel(id, m)));
-    const updated = document.querySelector("#updated");
-    if (updated) updated.textContent = `Updated ${data.updatedAt}`;
+    const updated = document.querySelector("time#updated");
+    if (updated instanceof HTMLTimeElement) {
+      updated.dateTime = data.updatedAt;
+      updated.textContent = `Updated ${data.updatedAt}`;
+    }
   } catch (err) {
     fail(`Could not load cost data. ${err instanceof Error ? err.message : ""}`.trim());
   }
@@ -433,7 +423,6 @@ async function boot(): Promise<void> {
 
 if (typeof document !== "undefined") {
   initTheme();
-  initReveals();
   initCopyButton();
   void boot();
 }

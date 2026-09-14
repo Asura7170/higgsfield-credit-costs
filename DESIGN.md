@@ -40,10 +40,10 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
 ## Rules
 
 - **Color lock:** lime is the only decorative accent (`--brand-deep` forest green carries it on light surfaces, where pure lime fails contrast). Tier colors are data status only, never decoration.
-- **Shape lock:** `--radius` for surfaces, pills for buttons.
+- **Shape lock:** `--radius` for surfaces, pills for buttons; `corner-shape` (Chrome 147) allowed only on `.pick` (scoop) and `.sw` (bevel).
 - **Data figures:** `font-variant-numeric: tabular-nums` on all tables and prices.
 - **Prose measure:** max `65ch` for paragraphs.
 - **Focus:** 2px `var(--focus)` outline with 2px offset, always visible.
-- **Motion:** `var(--ease-out)` everywhere, `transform`/`opacity` only; sections `.reveal` fade up via `IntersectionObserver`; `prefers-reduced-motion` kills everything.
+- **Motion:** `var(--ease-out)` everywhere, `transform`/`opacity` only; sections `.reveal` fade up via scroll-driven `animation-timeline: view()` (no JS); `prefers-reduced-motion` kills everything.
 - **Contrast:** AA everywhere, both themes — CTA is lime on near-black, tiers are 22% tints behind `--text`.
 - **Theme:** header `#theme-toggle` is a circular 44px surface button with a lime sun/moon icon (shows the target mode); it flips `html[data-theme]` (persisted in `localStorage`); unset = OS decides via `color-scheme`. No per-section inversion.

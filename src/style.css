@@ -17,6 +17,10 @@
   --brand: var(--lime);
   --brand-deep: #1a2e05;
   --on-brand: var(--ink);
+  /* ponytail: contrast-color() needs Chrome 147; fallback above keeps AA today. */
+  @supports (color: contrast-color(#000)) {
+    --on-brand: contrast-color(var(--lime));
+  }
   --focus: light-dark(#3f6212, var(--lime));
   --tier-high: #22c55e;
   --tier-mid: #eab308;
@@ -74,6 +78,7 @@ header {
   align-items: center;
   gap: 0.75rem 1rem;
   padding-top: 1rem;
+  reading-flow: flex-visual;
 }
 
 header h1 {
@@ -129,7 +134,7 @@ header h1 {
 
 body,
 .table-wrap,
-dialog,
+#how-popover,
 th,
 td,
 button {
@@ -141,16 +146,16 @@ button {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(16px);
+  animation: reveal-in 0.7s var(--ease-out) both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 50%;
 }
 
-.reveal.in {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.7s var(--ease-out),
-    transform 0.7s var(--ease-out);
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
 
 h1 {
@@ -164,6 +169,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   text-wrap: balance;
+  text-box: trim-both cap alphabetic;
 }
 
 #app h2 {
@@ -175,13 +181,22 @@ p {
   text-wrap: pretty;
 }
 
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+main {
+  container-type: inline-size;
+}
+
 header,
 main,
 section,
 #method {
   max-width: 64rem;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: clamp(1rem, 4cqw, 2rem);
 }
 
 button {
@@ -210,6 +225,17 @@ a:focus-visible {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: inset 0 1px 0 var(--edge-highlight);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--muted) 40%, transparent) transparent;
+  container-type: scroll-state;
+}
+
+@container scroll-state(scrollable: inline) {
+  .table-wrap {
+    box-shadow:
+      inset 0 1px 0 var(--edge-highlight),
+      inset 0 0 0 1px color-mix(in oklch, var(--brand) 35%, transparent);
+  }
 }
 
 table {
@@ -226,16 +252,20 @@ td {
   white-space: nowrap;
 }
 
+@function --tint(--c) {
+  result: color-mix(in oklch, var(--c) 22%, transparent);
+}
+
 td.tier-green {
-  background: color-mix(in oklch, var(--tier-high) 22%, transparent);
+  background: --tint(var(--tier-high));
 }
 
 td.tier-yellow {
-  background: color-mix(in oklch, var(--tier-mid) 22%, transparent);
+  background: --tint(var(--tier-mid));
 }
 
 td.tier-red {
-  background: color-mix(in oklch, var(--tier-low) 22%, transparent);
+  background: --tint(var(--tier-low));
 }
 
 td.tier-red::before {
@@ -256,6 +286,11 @@ td.top::after {
 
 #how-open {
   order: 3;
+}
+
+header:has(#how-popover:popover-open) #how-open {
+  border-color: var(--brand);
+  color: light-dark(var(--brand-deep), var(--brand));
 }
 
 #method,
@@ -289,7 +324,11 @@ section p,
   background: var(--tier-low);
 }
 
-dialog {
+#how-popover {
+  /* ponytail: dialog:modal UA centering — margin:auto + fixed insets; top layer does the rest */
+  margin: auto;
+  inset: 0;
+  position: fixed;
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
@@ -297,6 +336,7 @@ dialog {
   box-shadow: inset 0 1px 0 var(--edge-highlight);
   max-inline-size: min(32rem, calc(100dvw - 2rem));
   padding: 1.5rem;
+  width: stretch;
   transition:
     opacity 0.25s var(--ease-out),
     transform 0.25s var(--ease-out),
@@ -304,13 +344,28 @@ dialog {
     overlay 0.25s allow-discrete;
 }
 
-dialog::backdrop {
+#how-popover:popover-open {
+  opacity: 1;
+  transform: none;
+}
+
+#how-popover::backdrop {
+  opacity: 0;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(2px);
+  transition:
+    opacity 0.25s var(--ease-out),
+    overlay 0.25s allow-discrete,
+    display 0.25s allow-discrete;
+}
+
+#how-popover:popover-open::backdrop {
+  opacity: 1;
 }
 
 @starting-style {
-  dialog[open] {
+  #how-popover:popover-open,
+  #how-popover::backdrop {
     opacity: 0;
     transform: translateY(12px);
   }
@@ -455,6 +510,16 @@ ol.picks {
   gap: 0.75rem;
 }
 
+@supports (corner-shape: scoop) {
+  .pick {
+    corner-shape: scoop;
+  }
+
+  .sw {
+    corner-shape: bevel;
+  }
+}
+
 .pick {
   border: 1px solid var(--border);
   border-inline-start: 4px solid var(--border);
@@ -465,7 +530,7 @@ ol.picks {
   display: grid;
   gap: 0.25rem;
   animation: pick-in 0.5s var(--ease-out) both;
-  animation-delay: calc(var(--index, 0) * 70ms);
+  animation-delay: calc(sibling-index() * 70ms);
 }
 
 @keyframes pick-in {
@@ -559,6 +624,18 @@ ol.picks {
 
 .more-picks[open] summary::after {
   transform: rotate(45deg);
+}
+
+.more-picks::details-content {
+  block-size: 0;
+  overflow-y: clip;
+  transition:
+    block-size 0.3s var(--ease-out),
+    content-visibility 0.3s allow-discrete;
+}
+
+.more-picks[open]::details-content {
+  block-size: calc-size(auto, size);
 }
 
 pre {

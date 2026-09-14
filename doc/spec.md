@@ -53,16 +53,17 @@ Stars (`class="top"`) = first ≤3 GREEN picks per table (0 greens → 0 stars).
 
 ## 5. DOM contract
 
-- `index.html`: semantic, one `h1` "Higgsfield cost dashboard" (skip-link to `#app` first in `body`); `head` with favicon, OG tags, per-theme `theme-color`; `header` with `p#updated` + `button#how-open` "How to update" + `button#theme-toggle` (sun/moon icon, flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: uppercase `h2` with the model display name (`gpt_image_2_5` → "GPT Image 2.5", unknown ids fall back to the id with `_` as spaces), `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations" + ranked `ol.picks` of top picks (rank, combo, tabular price, ★, one-line plain verdict, raw reason in `title`) + `<details>` with the remaining picks; `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `dialog#how-dialog` with `closedby="any"` showing the refresh command in a `.cmd-bar` (`role="group"`) with `#copy-cmd` — Clipboard API copy with select-for-manual-copy fallback, feedback in `aria-live` `.copy-note`.
+- `index.html`: semantic, one `h1` "Higgsfield cost dashboard" (skip-link to `#app` first in `body`); `head` with favicon, OG tags, per-theme `theme-color`; `header` with `p > time#updated` + `button#how-open` "How to update" (`commandfor="how-popover" command="toggle-popover"`) + `button#theme-toggle` (sun/moon icon, flips `html[data-theme]`, persisted); `main#app` (TS-rendered sections per model: uppercase `h2` with the model display name (`gpt_image_2_5` → "GPT Image 2.5", unknown ids fall back to the id with `_` as spaces), `table` qualities=rows `scope="row"` / resolutions=cols `scope="col"` inside `.table-wrap`, `h3` "Best combinations" + ranked `ol.picks` of top picks (rank, combo, tabular price, ★, one-line plain verdict, raw reason in `title`) + `<details name="more-picks">` with the remaining picks; `section` legend (green/yellow/red swatches + "★ top pick (up to 3 per table)"); `p#method`; `div#how-popover popover="auto" closedby="any"` showing the refresh command in a `.cmd-bar` (`role="group"`) with `#copy-cmd` — Clipboard API copy with select-for-manual-copy fallback, feedback in `aria-live` `<output>.copy-note`.
 - Fetch failure / malformed JSON → `p#updated` shows error, `main#app` shows one `p` error message, no tables.
 
 ## 6. Style contract
 
 Tokens live in `DESIGN.md`; `src/style.css` references them, no duplicates.
 Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page never overflows);
-`td.tier-green/yellow/red` backgrounds; `td.tier-red::before` `"! "` red; `td.top::after` `" ★"` lime;
+`td.tier-green/yellow/red` backgrounds via `@function --tint`; `td.tier-red::before` `"! "` red; `td.top::after` `" ★"` lime;
 44px buttons, `:focus-visible` lime, `prefers-reduced-motion` kills animation.
-`.reveal` sections start `opacity: 0` and get `.in` (fade/slide in) via IntersectionObserver; `#copy-cmd` sticks right inside `.cmd-bar` while the command scrolls.
+`.reveal` sections fade up via scroll-driven `animation-timeline: view()` (no JS, no noscript); pick stagger uses `sibling-index()`;
+`.more-picks::details-content` animates open/close via `calc-size()`; `#copy-cmd` sticks right inside `.cmd-bar` while the command scrolls.
 
 ## 7. Edge cases
 
@@ -75,4 +76,4 @@ Key rules: `.table-wrap { overflow-x: auto }` (tables scroll at 375px, page neve
 ## 8. File map + Verify
 
 - `index.html` (shell) → `src/main.ts` (fetch + algorithm + render) → `src/style.css` (tokens from `DESIGN.md`). New: `DESIGN.md` (tokens only).
-- Verify: `vp check`, `vp build` (`tsc`), `vp test` clean; Chrome 375px (tables scroll, page not) + 1280px, light + dark; keyboard reaches button/dialog/table; dialog closes via `closedby`; reduced-motion kills animation.
+- Verify: `vp check`, `vp build` (`tsc`), `vp test` clean; Chrome 375px (tables scroll, page not) + 1280px, light + dark; keyboard reaches button/popover/table; popover closes via `closedby` (ESC / click outside / `request-close`); reduced-motion kills animation.

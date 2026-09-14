@@ -23,21 +23,13 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <noscript
-      ><style>
-        .reveal {
-          opacity: 1;
-          transform: none;
-        }
-      </style></noscript
-    >
   </head>
   <body>
     <a class="skip-link" href="#app">Skip to content</a>
     <header>
       <h1>Higgsfield cost dashboard</h1>
-      <p id="updated">Loading cost data…</p>
-      <button id="how-open" type="button" commandfor="how-dialog" command="show-modal">
+      <p><time id="updated" datetime="">Loading cost data…</time></p>
+      <button id="how-open" type="button" commandfor="how-popover" command="toggle-popover">
         How to update
       </button>
       <button id="theme-toggle" type="button" aria-label="Toggle color theme" aria-pressed="false">
@@ -75,14 +67,14 @@
       Each combo scores quality plus resolution per credit, penalized when a neighbor costs
       disproportionately more; combos dominated on quality, resolution, and price rank red.
     </p>
-    <dialog id="how-dialog" closedby="any" aria-labelledby="how-h">
+    <div id="how-popover" popover="auto" closedby="any" aria-labelledby="how-h">
       <div class="dialog-head">
         <h2 id="how-h">How to update</h2>
         <button
           class="dialog-x"
           type="button"
-          commandfor="how-dialog"
-          command="close"
+          commandfor="how-popover"
+          command="request-close"
           aria-label="Close"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -104,13 +96,13 @@
         <div class="cmd-scroll">
           <div class="cmd-line">
             <span class="cmd-prompt" aria-hidden="true">❯</span>
-            <pre><code id="refresh-cmd">powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
+            <pre><code id="refresh-cmd" translate="no">powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
             <button id="copy-cmd" type="button">Copy</button>
           </div>
         </div>
       </div>
-      <p class="copy-note" aria-live="polite"></p>
-    </dialog>
+      <p><output class="copy-note" aria-live="polite"></output></p>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
