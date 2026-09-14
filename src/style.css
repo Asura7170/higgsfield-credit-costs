@@ -304,25 +304,16 @@ tbody tr:last-child > * {
 }
 
 .jump-r {
-  right: 0;
+  left: 0;
   top: 50%;
-  translate: 50% -50%;
+  translate: -50% -50%;
   z-index: 2;
 }
 
 .jump-d {
-  bottom: 0;
+  top: 0;
   left: 50%;
-  translate: -50% 50%;
-}
-
-/* ponytail: outer frame has no neighbor to straddle into — tuck those labels inside. */
-td:last-child .jump-r {
-  translate: 0 -50%;
-}
-
-tbody tr:last-child .jump-d {
-  translate: -50% 0;
+  translate: -50% -50%;
 }
 
 @function --tint(--c) {
