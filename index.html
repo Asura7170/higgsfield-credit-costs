@@ -101,11 +101,12 @@
         <li>Run the refresh command, then reload this page.</li>
       </ol>
       <div class="cmd-bar" aria-label="Refresh command">
-        <div class="cmd-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-        <div class="cmd-line">
-          <span class="cmd-prompt" aria-hidden="true">❯</span>
-          <pre><code id="refresh-cmd">powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
-          <button id="copy-cmd" type="button">Copy</button>
+        <div class="cmd-scroll">
+          <div class="cmd-line">
+            <span class="cmd-prompt" aria-hidden="true">❯</span>
+            <pre><code id="refresh-cmd">powershell -ExecutionPolicy Bypass -File scripts/fetch-higgsfield-costs.ps1</code></pre>
+            <button id="copy-cmd" type="button">Copy</button>
+          </div>
         </div>
       </div>
       <p class="copy-note" aria-live="polite"></p>
