@@ -50,6 +50,7 @@ describe("scoring", () => {
 
   it("tiers by score/maxScore", () => {
     expect(by("low", "1k").tier).toBe("green");
+    // ponytail: fragile by design — norm 80/121 ≈ 0.661 hugs GREEN_AT 0.66.
     expect(by("low", "2k").tier).toBe("green");
     expect(by("high", "1k").tier).toBe("yellow");
     expect(by("high", "2k").tier).toBe("yellow");
