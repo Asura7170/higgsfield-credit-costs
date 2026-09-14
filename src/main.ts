@@ -12,6 +12,17 @@ const GREEN_AT = 0.66;
 const YELLOW_AT = 0.33;
 const STARS_MAX = 3;
 
+const MODEL_NAMES: Record<string, string> = {
+  gpt_image_2_5: "GPT Image 2.5",
+  grok_image: "Grok Image",
+  grok_image_2_0: "Grok Image 2.0",
+  nano_banana_pro: "Nano Banana Pro",
+};
+
+function displayName(id: string): string {
+  return MODEL_NAMES[id] ?? id.replaceAll("_", " ");
+}
+
 type Tier = "green" | "yellow" | "red";
 
 interface CostFile {
@@ -184,7 +195,7 @@ function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
   section.className = "reveal";
   const h2 = document.createElement("h2");
-  h2.textContent = `${m.id} — ${m.cells.length} combos`;
+  h2.textContent = displayName(m.id);
   section.append(h2);
 
   const wrap = document.createElement("div");

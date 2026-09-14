@@ -20,6 +20,7 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
   --muted: light-dark(#5b636a, #929292);
   --border: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.08));
   --brand: var(--lime);
+  --brand-deep: #1a2e05;
   --on-brand: var(--ink);
   --focus: light-dark(#3f6212, var(--lime));
   --tier-high: #22c55e;
@@ -38,7 +39,7 @@ references these tokens, no duplicates. One accent (lime), one radius, theme fol
 
 ## Rules
 
-- **Color lock:** lime is the only decorative accent. Tier colors are data status only, never decoration.
+- **Color lock:** lime is the only decorative accent (`--brand-deep` forest green carries it on light surfaces, where pure lime fails contrast). Tier colors are data status only, never decoration.
 - **Shape lock:** `--radius` for surfaces, pills for buttons.
 - **Data figures:** `font-variant-numeric: tabular-nums` on all tables and prices.
 - **Prose measure:** max `65ch` for paragraphs.
