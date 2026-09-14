@@ -278,8 +278,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
 
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
-  // ponytail: widest matrix spans 2 bento cols; threshold 8 fits only GPT (15).
-  section.className = `reveal model${m.cells.length > 8 ? " model-wide" : ""}`;
+  section.className = "reveal model";
   const h2 = document.createElement("h2");
   h2.textContent = displayName(m.id);
   section.append(h2);
@@ -387,8 +386,6 @@ function renderModel(m: ModelResult): HTMLElement {
 function render(results: ModelResult[]): void {
   const app = document.querySelector("#app");
   if (!app) return;
-  // ponytail: fill-4 covers the pinned 4-model snapshot; other counts stay sparse.
-  app.classList.toggle("fill-4", results.length === 4);
   app.replaceChildren(...results.map(renderModel));
 }
 
