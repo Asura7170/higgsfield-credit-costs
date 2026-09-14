@@ -284,6 +284,10 @@ td {
   text-align: center;
 }
 
+thead th {
+  text-align: center;
+}
+
 tr > :first-child {
   border-left-width: 1px;
 }
