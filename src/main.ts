@@ -74,6 +74,42 @@ function jumpPct(from: number, to: number): number {
   return Math.round(((to - from) / from) * 100);
 }
 
+// ponytail: nearest-valid scan duplicated from scoreModel; n<=15 so no index needed.
+function deltasFor(m: ModelResult, c: Cell): { left: Cell | undefined; up: Cell | undefined } {
+  const byPos = (qi: number, ri: number): Cell | undefined =>
+    m.cells.find((x) => x.qi === qi && x.ri === ri);
+  let left: Cell | undefined;
+  for (let r = c.ri - 1; r >= 0; r--) {
+    const found = byPos(c.qi, r);
+    if (found) {
+      left = found;
+      break;
+    }
+  }
+  let up: Cell | undefined;
+  for (let q = c.qi - 1; q >= 0; q--) {
+    const found = byPos(q, c.ri);
+    if (found) {
+      up = found;
+      break;
+    }
+  }
+  return { left, up };
+}
+
+function fmtJump(pct: number): string {
+  return pct > 0 ? `+${pct}%` : pct === 0 ? "= 0%" : `${pct}%`;
+}
+
+// ponytail: same gate as explain(); render-only so Phase-A reasons stay exact.
+export function skippedNote(m: ModelResult, c: Cell): string {
+  const { left, up } = deltasFor(m, c);
+  const gap =
+    (left !== undefined && left.ri < c.ri - 1 && c.price > left.price + EPS) ||
+    (up !== undefined && up.qi < c.qi - 1 && c.price > up.price + EPS);
+  return gap ? " (skipped n/a)" : "";
+}
+
 interface Neighbors {
   left: Cell | undefined;
   right: Cell | undefined;
@@ -251,7 +287,7 @@ function pickItem(c: Cell, rank: number): HTMLElement {
 
 function renderModel(m: ModelResult): HTMLElement {
   const section = document.createElement("section");
-  section.className = "reveal";
+  section.className = "reveal model";
   const h2 = document.createElement("h2");
   h2.textContent = displayName(m.id);
   section.append(h2);
@@ -284,9 +320,34 @@ function renderModel(m: ModelResult): HTMLElement {
       const td = document.createElement("td");
       const cell = m.cells.find((c) => c.q === q && c.r === r);
       if (cell) {
+        const { left, up } = deltasFor(m, cell);
         td.textContent = `${cell.price}`;
+        const jumps: string[] = [];
+        for (const [label, cls] of [
+          [left && `${fmtJump(jumpPct(left.price, cell.price))} →`, "jump-r"],
+          [up && `${fmtJump(jumpPct(up.price, cell.price))} ↓`, "jump-d"],
+        ] as const) {
+          if (!label) continue;
+          jumps.push(label);
+          const edge = document.createElement("span");
+          edge.className = cls;
+          edge.setAttribute("aria-hidden", "true");
+          edge.textContent = label;
+          td.append(edge);
+        }
         td.className = `tier-${cell.tier}${cell.top ? " top" : ""}`;
-        td.title = cell.reason;
+        const note = skippedNote(m, cell);
+        td.title = cell.reason.includes("(skipped n/a)") ? cell.reason : cell.reason + note;
+        const tierWord =
+          cell.tier === "green"
+            ? "best value"
+            : cell.tier === "yellow"
+              ? "fair value"
+              : "poor value";
+        td.setAttribute(
+          "aria-label",
+          `${cell.price} credits, ${tierWord}${cell.top ? ", top pick" : ""}${jumps.length > 0 ? `, ${jumps.join(", ")}` : ", base"}`,
+        );
       } else {
         td.textContent = "n/a";
       }
