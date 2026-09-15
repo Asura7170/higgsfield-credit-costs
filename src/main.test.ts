@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { displayName, scoreModel, splitPicks, verdict, type Cell } from "./main.ts";
+import { displayName, scoreModel, skippedNote, splitPicks, verdict, type Cell } from "./main.ts";
 
 const rankKey = (c: Cell): number[] => [-c.score, c.price, -c.utility, c.qi, c.ri];
 const ordered = (a: number[], b: number[]): boolean => {
@@ -167,6 +167,18 @@ describe("holes", () => {
     const m = scoreModel("m", { resolutions: [], qualities: [], matrix: {} });
     expect(m.cells).toEqual([]);
     expect(m.picks).toEqual([]);
+  });
+
+  it("flags dominated titles across holes without touching the reason", () => {
+    const m = scoreModel("m", {
+      resolutions: ["1k", "2k", "4k"],
+      qualities: ["a", "b"],
+      matrix: { a: { "1k": 1, "4k": 2 }, b: { "1k": 1, "2k": 1, "4k": 2 } },
+    });
+    const cell = m.cells.find((c) => c.q === "a" && c.r === "4k")!;
+    expect(cell.reason.startsWith("Dominated by")).toBe(true);
+    expect(cell.reason).not.toContain("(skipped n/a)");
+    expect(skippedNote(m, cell)).toBe(" (skipped n/a)");
   });
 });
 

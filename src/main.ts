@@ -101,6 +101,15 @@ function fmtJump(pct: number): string {
   return pct > 0 ? `+${pct}%` : pct === 0 ? "= 0%" : `${pct}%`;
 }
 
+// ponytail: same gate as explain(); render-only so Phase-A reasons stay exact.
+export function skippedNote(m: ModelResult, c: Cell): string {
+  const { left, up } = deltasFor(m, c);
+  const gap =
+    (left !== undefined && left.ri < c.ri - 1 && c.price > left.price + EPS) ||
+    (up !== undefined && up.qi < c.qi - 1 && c.price > up.price + EPS);
+  return gap ? " (skipped n/a)" : "";
+}
+
 interface Neighbors {
   left: Cell | undefined;
   right: Cell | undefined;
@@ -327,7 +336,8 @@ function renderModel(m: ModelResult): HTMLElement {
           td.append(edge);
         }
         td.className = `tier-${cell.tier}${cell.top ? " top" : ""}`;
-        td.title = cell.reason;
+        const note = skippedNote(m, cell);
+        td.title = cell.reason.includes("(skipped n/a)") ? cell.reason : cell.reason + note;
         const tierWord =
           cell.tier === "green"
             ? "best value"
